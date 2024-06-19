@@ -33,6 +33,7 @@
     "react-dom": ">=18"
   },
   "dependencies": {
+    "@3dsteam/react-form-validator": "^1.0.0",
     "@syncfusion/ej2-react-buttons": "^26.1.35",
     "@syncfusion/ej2-react-calendars": "^26.1.35",
     "@syncfusion/ej2-react-dropdowns": "^26.1.35",
