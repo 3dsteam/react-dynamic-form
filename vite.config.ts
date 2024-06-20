@@ -14,4 +14,7 @@ export default {
             external: ["react", "react-dom"],
         },
     },
+    test: {
+        environment: "jsdom",
+    },
 }
