@@ -20,6 +20,7 @@ jobs:
 
       - name: 📝 Setup .yarnrc.yml
         run: |
+          yarn config set nodeLinker node-modules
           yarn config set npmScopes.3dsteam.npmPublishRegistry "https://npm.pkg.github.com"
           yarn config set npmScopes.3dsteam.npmAlwaysAuth true
           yarn config set npmScopes.3dsteam.npmAuthToken $NPM_AUTH_TOKEN
