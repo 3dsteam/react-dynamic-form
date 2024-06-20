@@ -27,6 +27,7 @@ export const InputField = (props: IInputFieldProps) => {
 
         return (
             <TextBoxComponent
+                id={props.field.name + "-field"}
                 // Set ALL other properties
                 {...props.field.props}
                 // Identifier
@@ -41,6 +42,7 @@ export const InputField = (props: IInputFieldProps) => {
     } else if (props.field.type === EFieldType.TEXTAREA) {
         return (
             <TextAreaComponent
+                id={props.field.name + "-field"}
                 // Set ALL other properties
                 {...props.field.props}
                 // Identifier
@@ -54,6 +56,7 @@ export const InputField = (props: IInputFieldProps) => {
     } else if (props.field.type === EFieldType.NUMBER) {
         return (
             <NumericTextBoxComponent
+                id={props.field.name + "-field"}
                 // Set ALL other properties
                 {...props.field.props}
                 // Identifier
@@ -67,6 +70,7 @@ export const InputField = (props: IInputFieldProps) => {
     } else if (props.field.type === EFieldType.DATE) {
         return (
             <DatePickerComponent
+                id={props.field.name + "-field"}
                 // Set ALL other properties
                 {...props.field.props}
                 // Identifier
@@ -80,6 +84,7 @@ export const InputField = (props: IInputFieldProps) => {
     } else if (props.field.type === EFieldType.SELECT) {
         return (
             <DropDownListComponent
+                id={props.field.name + "-field"}
                 // Set ALL other properties
                 {...props.field.props}
                 // Identifier
@@ -93,6 +98,7 @@ export const InputField = (props: IInputFieldProps) => {
     } else if (props.field.type === EFieldType.CHECKBOX) {
         return (
             <CheckBoxComponent
+                id={props.field.name + "-field"}
                 // Set ALL other properties
                 {...props.field.props}
                 // Identifier
@@ -107,6 +113,8 @@ export const InputField = (props: IInputFieldProps) => {
 
     return (
         <input
+            id={props.field.name + "-field"}
+            // Set ALL other properties
             {...props.field.props}
             // Identifier
             name={props.field.name}
