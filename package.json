@@ -1,7 +1,7 @@
 {
-  "name": "react-dynamic-form",
+  "name": "@3dsteam/react-dynamic-form",
   "description": "A React library for creating dynamic forms based on JSON schema.",
-  "version": "1.0.0",
+  "version": "1.0.0-rc.0",
   "type": "module",
   "module": "dist/react-dynamic-form.js",
   "types": "dist/index.d.ts",
