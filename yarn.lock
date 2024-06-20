@@ -925,7 +925,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@syncfusion/ej2-splitbuttons@npm:~26.1.35":
+"@syncfusion/ej2-react-splitbuttons@npm:^26.1.35":
+  version: 26.1.35
+  resolution: "@syncfusion/ej2-react-splitbuttons@npm:26.1.35"
+  dependencies:
+    "@syncfusion/ej2-base": "npm:~26.1.35"
+    "@syncfusion/ej2-react-base": "npm:~26.1.35"
+    "@syncfusion/ej2-splitbuttons": "npm:26.1.35"
+  checksum: 10c0/e60fff7186de541aae313f596e5d823251c1c6a49d293e4c17f6662b610854aa8ba3681eff564de5a96c9d66b0baa3585deddef48ecb5df1a8793cf863d51239
+  languageName: node
+  linkType: hard
+
+"@syncfusion/ej2-splitbuttons@npm:26.1.35, @syncfusion/ej2-splitbuttons@npm:~26.1.35":
   version: 26.1.35
   resolution: "@syncfusion/ej2-splitbuttons@npm:26.1.35"
   dependencies:
@@ -3783,6 +3794,7 @@ __metadata:
     "@syncfusion/ej2-react-calendars": "npm:^26.1.35"
     "@syncfusion/ej2-react-dropdowns": "npm:^26.1.35"
     "@syncfusion/ej2-react-inputs": "npm:^26.1.35"
+    "@syncfusion/ej2-react-splitbuttons": "npm:^26.1.35"
     "@types/react": "npm:^18.3.3"
     "@vitejs/plugin-react-swc": "npm:^3.7.0"
     eslint: "npm:9.x"
