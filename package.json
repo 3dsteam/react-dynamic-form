@@ -3,6 +3,7 @@
   "description": "A React library for creating dynamic forms based on JSON schema.",
   "version": "1.0.0-rc.3",
   "type": "module",
+  "main": "dist/react-dynamic-form.umd.cjs",
   "module": "dist/react-dynamic-form.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -35,7 +36,7 @@
     "react-dom": ">=18"
   },
   "dependencies": {
-    "@3dsteam/react-form-validator": "^1.0.0",
+    "@3dsteam/react-form-validator": "1.1.0-rc.2",
     "@syncfusion/ej2-react-buttons": "^26.1.35",
     "@syncfusion/ej2-react-calendars": "^26.1.35",
     "@syncfusion/ej2-react-dropdowns": "^26.1.35",
@@ -46,8 +47,10 @@
     "@eslint/compat": "^1.1.0",
     "@eslint/js": "^9.5.0",
     "@testing-library/dom": "^10.1.0",
+    "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/react": "^16.0.0",
     "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react-swc": "^3.7.0",
     "eslint": "9.x",
     "eslint-config-prettier": "^9.1.0",
