@@ -17,6 +17,46 @@ describe("Main", () => {
     });
 });
 
+describe("Field Mode", () => {
+    describe("When mode is not set", () => {
+        beforeEach(() => {
+            render(<DynamicForm fields={[{ name: "username", type: EFieldType.TEXT }]} onSubmit={onSubmit} />);
+        });
+
+        it("renders the Syncfusion field by default", () => {
+            expect(screen.getByTestId("username-syncfusion-field")).toBeInTheDocument();
+        });
+    });
+
+    describe("When mode is set to 'syncfusion'", () => {
+        beforeEach(() => {
+            render(
+                <DynamicForm
+                    fields={[{ name: "username", type: EFieldType.TEXT }]}
+                    mode="syncfusion"
+                    onSubmit={onSubmit}
+                />,
+            );
+        });
+
+        it("renders the Syncfusion field", () => {
+            expect(screen.getByTestId("username-syncfusion-field")).toBeInTheDocument();
+        });
+    });
+
+    describe("When mode is set to 'ionic'", () => {
+        beforeEach(() => {
+            render(
+                <DynamicForm fields={[{ name: "username", type: EFieldType.TEXT }]} mode="ionic" onSubmit={onSubmit} />,
+            );
+        });
+
+        it("renders the Ionic field", () => {
+            expect(screen.getByTestId("username-ionic-field")).toBeInTheDocument();
+        });
+    });
+});
+
 describe("Render conditions", () => {
     describe("When fields have render conditions", () => {
         beforeEach(() => {
@@ -45,16 +85,20 @@ describe("Render conditions", () => {
         });
 
         it("doesn't render the password field", () => {
-            expect(screen.queryByTestId("password-field")).not.toBeInTheDocument();
+            expect(screen.queryByTestId("password-syncfusion-field")).not.toBeInTheDocument();
         });
 
         describe("When username is filled", () => {
             beforeEach(() => {
-                act(() => fireEvent.change(screen.getByTestId("username-field"), { target: { value: "lorem.ipsum" } }));
+                act(() =>
+                    fireEvent.change(screen.getByTestId("username-syncfusion-field"), {
+                        target: { value: "lorem.ipsum" },
+                    }),
+                );
             });
 
             it("renders the password field", () => {
-                expect(screen.getByTestId("password-field")).toBeInTheDocument();
+                expect(screen.getByTestId("password-syncfusion-field")).toBeInTheDocument();
             });
         });
     });
@@ -83,26 +127,32 @@ describe("Render conditions", () => {
         });
 
         it("doesn't render the password field", () => {
-            expect(screen.queryByTestId("password-field")).not.toBeInTheDocument();
+            expect(screen.queryByTestId("password-syncfusion-field")).not.toBeInTheDocument();
         });
 
         describe("When username is filled with different value", () => {
             beforeEach(() => {
-                act(() => fireEvent.change(screen.getByTestId("username-field"), { target: { value: "lorem" } }));
+                act(() =>
+                    fireEvent.change(screen.getByTestId("username-syncfusion-field"), { target: { value: "lorem" } }),
+                );
             });
 
             it("doesn't render the password field", () => {
-                expect(screen.queryByTestId("password-field")).not.toBeInTheDocument();
+                expect(screen.queryByTestId("password-syncfusion-field")).not.toBeInTheDocument();
             });
         });
 
         describe("When username is filled with the correct value", () => {
             beforeEach(() => {
-                act(() => fireEvent.change(screen.getByTestId("username-field"), { target: { value: "lorem.ipsum" } }));
+                act(() =>
+                    fireEvent.change(screen.getByTestId("username-syncfusion-field"), {
+                        target: { value: "lorem.ipsum" },
+                    }),
+                );
             });
 
             it("renders the password field", () => {
-                expect(screen.getByTestId("password-field")).toBeInTheDocument();
+                expect(screen.getByTestId("password-syncfusion-field")).toBeInTheDocument();
             });
         });
     });
@@ -131,26 +181,32 @@ describe("Render conditions", () => {
         });
 
         it("doesn't render the password field", () => {
-            expect(screen.queryByTestId("password-field")).not.toBeInTheDocument();
+            expect(screen.queryByTestId("password-syncfusion-field")).not.toBeInTheDocument();
         });
 
         describe("When username is filled with different value", () => {
             beforeEach(() => {
-                act(() => fireEvent.change(screen.getByTestId("username-field"), { target: { value: "lorem" } }));
+                act(() =>
+                    fireEvent.change(screen.getByTestId("username-syncfusion-field"), { target: { value: "lorem" } }),
+                );
             });
 
             it("renders the password field", () => {
-                expect(screen.getByTestId("password-field")).toBeInTheDocument();
+                expect(screen.getByTestId("password-syncfusion-field")).toBeInTheDocument();
             });
         });
 
         describe("When username is filled with the correct value", () => {
             beforeEach(() => {
-                act(() => fireEvent.change(screen.getByTestId("username-field"), { target: { value: "lorem.ipsum" } }));
+                act(() =>
+                    fireEvent.change(screen.getByTestId("username-syncfusion-field"), {
+                        target: { value: "lorem.ipsum" },
+                    }),
+                );
             });
 
             it("renders the password field", () => {
-                expect(screen.getByTestId("password-field")).toBeInTheDocument();
+                expect(screen.getByTestId("password-syncfusion-field")).toBeInTheDocument();
             });
         });
     });
@@ -180,28 +236,36 @@ describe("Render conditions", () => {
         });
 
         it("doesn't render the privacy field", () => {
-            expect(screen.queryByTestId("privacy-field")).not.toBeInTheDocument();
+            expect(screen.queryByTestId("privacy-syncfusion-field")).not.toBeInTheDocument();
         });
 
         describe("When password and confirm are filled with different value", () => {
             beforeEach(() => {
-                act(() => fireEvent.change(screen.getByTestId("password-field"), { target: { value: "lorem" } }));
-                act(() => fireEvent.change(screen.getByTestId("confirm-field"), { target: { value: "ipsum" } }));
+                act(() =>
+                    fireEvent.change(screen.getByTestId("password-syncfusion-field"), { target: { value: "lorem" } }),
+                );
+                act(() =>
+                    fireEvent.change(screen.getByTestId("confirm-syncfusion-field"), { target: { value: "ipsum" } }),
+                );
             });
 
             it("doesn't render the privacy field", () => {
-                expect(screen.queryByTestId("privacy-field")).not.toBeInTheDocument();
+                expect(screen.queryByTestId("privacy-syncfusion-field")).not.toBeInTheDocument();
             });
         });
 
         describe("When password and confirm are filled with same value", () => {
             beforeEach(() => {
-                act(() => fireEvent.change(screen.getByTestId("password-field"), { target: { value: "lorem" } }));
-                act(() => fireEvent.change(screen.getByTestId("confirm-field"), { target: { value: "lorem" } }));
+                act(() =>
+                    fireEvent.change(screen.getByTestId("password-syncfusion-field"), { target: { value: "lorem" } }),
+                );
+                act(() =>
+                    fireEvent.change(screen.getByTestId("confirm-syncfusion-field"), { target: { value: "lorem" } }),
+                );
             });
 
             it("renders the privacy field", () => {
-                expect(screen.getByTestId("privacy-field")).toBeInTheDocument();
+                expect(screen.getByTestId("privacy-syncfusion-field")).toBeInTheDocument();
             });
         });
     });

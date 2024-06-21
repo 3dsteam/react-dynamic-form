@@ -18,6 +18,12 @@ interface IDynamicFormProps {
      * @param data {Record<string, unknown>}
      */
     onSubmit: (data: Record<string, unknown>) => Promise<void> | void;
+
+    /**
+     * Select witch fields to render
+     * @default syncfusion
+     */
+    mode?: "syncfusion" | "ionic";
     /**
      * If true, all fields with undefined value will be set to null
      * @default true
@@ -91,6 +97,8 @@ interface IDynamicFormProps {
 export const DynamicForm = (props: IDynamicFormProps) => {
     const [values, setValues] = useState<Record<string, unknown>>({});
     const btnSubmit = useRef<ProgressButtonComponent | null>(null);
+
+    const mode = useMemo(() => props.mode ?? "syncfusion", [props.mode]);
 
     /**
      * Render conditions
@@ -181,10 +189,11 @@ export const DynamicForm = (props: IDynamicFormProps) => {
             {fields.map((field) => (
                 <div key={field.name} className={field.className}>
                     {/* Label */}
-                    {field.label && <label form={field.name + "-field"}>{field.label}</label>}
+                    {field.label && mode !== "ionic" && <label form={field.name + "-field"}>{field.label}</label>}
                     {/* Input */}
                     <InputField
                         field={field}
+                        mode={mode}
                         value={values[field.name]}
                         onChange={(value) => handleOnFieldChange(field.name, value)}
                     />
