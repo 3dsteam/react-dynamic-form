@@ -28,6 +28,7 @@ export const InputField = (props: IInputFieldProps) => {
         return (
             <TextBoxComponent
                 id={props.field.name + "-field"}
+                data-testid={props.field.name + "-field"}
                 // Set ALL other properties
                 {...props.field.props}
                 // Identifier
@@ -43,6 +44,7 @@ export const InputField = (props: IInputFieldProps) => {
         return (
             <TextAreaComponent
                 id={props.field.name + "-field"}
+                data-testid={props.field.name + "-field"}
                 // Set ALL other properties
                 {...props.field.props}
                 // Identifier
@@ -57,6 +59,7 @@ export const InputField = (props: IInputFieldProps) => {
         return (
             <NumericTextBoxComponent
                 id={props.field.name + "-field"}
+                data-testid={props.field.name + "-field"}
                 // Set ALL other properties
                 {...props.field.props}
                 // Identifier
@@ -71,6 +74,7 @@ export const InputField = (props: IInputFieldProps) => {
         return (
             <DatePickerComponent
                 id={props.field.name + "-field"}
+                data-testid={props.field.name + "-field"}
                 // Set ALL other properties
                 {...props.field.props}
                 // Identifier
@@ -85,6 +89,7 @@ export const InputField = (props: IInputFieldProps) => {
         return (
             <DropDownListComponent
                 id={props.field.name + "-field"}
+                data-testid={props.field.name + "-field"}
                 // Set ALL other properties
                 {...props.field.props}
                 // Identifier
@@ -99,6 +104,7 @@ export const InputField = (props: IInputFieldProps) => {
         return (
             <CheckBoxComponent
                 id={props.field.name + "-field"}
+                data-testid={props.field.name + "-field"}
                 // Set ALL other properties
                 {...props.field.props}
                 // Identifier
@@ -114,6 +120,7 @@ export const InputField = (props: IInputFieldProps) => {
     return (
         <input
             id={props.field.name + "-field"}
+            data-testid={props.field.name + "-field"}
             // Set ALL other properties
             {...props.field.props}
             // Identifier

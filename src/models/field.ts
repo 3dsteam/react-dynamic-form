@@ -1,5 +1,6 @@
 import { ReactElement } from "react";
 import { IRule } from "@3dsteam/react-form-validator";
+import { ICondition } from "./condition";
 
 export interface IField {
     name: string;
@@ -21,6 +22,13 @@ export interface IField {
      * @default undefined
      */
     validations?: IRule;
+    /**
+     * Render conditions
+     *
+     * Show/hide the field based on the conditions
+     * @default undefined
+     */
+    conditions?: ICondition;
     /**
      * CSS class
      *

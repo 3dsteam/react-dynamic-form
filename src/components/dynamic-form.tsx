@@ -1,9 +1,10 @@
-import { FormEvent, ReactElement, useRef, useState } from "react";
+import { FormEvent, ReactElement, useMemo, useRef, useState } from "react";
 import { IField } from "../models/field";
 import { InputField } from "./input-field";
 import { ButtonComponent } from "@syncfusion/ej2-react-buttons";
 import useFormValidator, { IRule } from "@3dsteam/react-form-validator";
 import { ProgressButtonComponent } from "@syncfusion/ej2-react-splitbuttons";
+import { EConditionRuleOperator, IConditionRule } from "../models/condition";
 
 interface IDynamicFormProps {
     /**
@@ -91,10 +92,51 @@ export const DynamicForm = (props: IDynamicFormProps) => {
     const [values, setValues] = useState<Record<string, unknown>>({});
     const btnSubmit = useRef<ProgressButtonComponent | null>(null);
 
-    // Form validator
+    /**
+     * Render conditions
+     * Filter fields based on conditions
+     */
+    const fields = useMemo(() => {
+        return props.fields.filter((field) => {
+            if (!field.conditions) return true;
+            // Check value conditions
+            const checkConditions = (rule: IConditionRule) => {
+                const value = values[rule.field];
+                let ruleValue = rule.value;
+                // Check if rule value is a dynamic value {{field}}
+                if (typeof rule.value === "string") {
+                    const match = rule.value.match(/{{([^}]*)}}/);
+                    if (match) ruleValue = values[match[1].trim()];
+                }
+                // Check for different operators
+                switch (rule.operator) {
+                    case EConditionRuleOperator.EQUAL:
+                        return value === ruleValue;
+                    case EConditionRuleOperator.NOT_EQUAL:
+                        return value !== ruleValue;
+                    case EConditionRuleOperator.IS_NULL:
+                    case EConditionRuleOperator.IS_EMPTY:
+                        return !value;
+                    case EConditionRuleOperator.IS_NOT_NULL:
+                    case EConditionRuleOperator.IS_NOT_EMPTY:
+                        return !!value;
+                    default:
+                        return true;
+                }
+            };
+            // Check for different conditions
+            if (field.conditions.condition === "or") return field.conditions.rules.some(checkConditions);
+            return field.conditions.rules.every(checkConditions);
+        });
+    }, [values, props.fields]);
+
+    /**
+     * Form validation
+     * Validate form based on fields validations
+     */
     const { errors, validate } = useFormValidator({
         data: values,
-        rules: props.fields.reduce(
+        rules: fields.reduce(
             (acc, field) => {
                 if (field.validations) acc[field.name] = field.validations;
                 return acc;
@@ -134,9 +176,9 @@ export const DynamicForm = (props: IDynamicFormProps) => {
     };
 
     return (
-        <form onSubmit={handleOnSubmit} className={props.className}>
+        <form data-testid="dynamic-form" onSubmit={handleOnSubmit} className={props.className}>
             {/* Fields */}
-            {props.fields.map((field) => (
+            {fields.map((field) => (
                 <div key={field.name} className={field.className}>
                     {/* Label */}
                     {field.label && <label form={field.name + "-field"}>{field.label}</label>}
