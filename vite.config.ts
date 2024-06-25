@@ -7,10 +7,17 @@ export default {
     build: {
         lib: {
             entry: "./src/index.ts",
-            name: "react-dynamic-form"
+            name: "react-dynamic-form",
         },
         rollupOptions: {
-            external: ["react", "react-dom"],
+            external: ["react", "react-dom", "@ionic/react"],
+            output: {
+                globals: {
+                    react: "React",
+                    "react-dom": "ReactDOM",
+                    "@ionic/react": "IonicReact",
+                },
+            },
         },
     },
     test: {

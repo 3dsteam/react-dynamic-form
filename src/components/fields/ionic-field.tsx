@@ -1,7 +1,7 @@
+import { IonCheckbox, IonInput, IonItem, IonSelect, IonSelectOption, IonTextarea } from "@ionic/react";
 import { IInputFieldProps } from "../input-field";
 import { GenericField } from "./generic-field";
 import { EFieldType } from "../../models/field";
-import { IonCheckbox, IonInput, IonItem, IonSelect, IonSelectOption, IonTextarea } from "@ionic/react";
 
 export const IonicField = (props: Omit<IInputFieldProps, "mode">) => {
     if (
