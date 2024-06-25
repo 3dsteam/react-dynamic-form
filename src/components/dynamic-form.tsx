@@ -1,4 +1,4 @@
-import { FormEvent, ReactElement, useMemo, useRef, useState } from "react";
+import { FormEvent, ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import { IField } from "../models/field";
 import { InputField } from "./input-field";
 import { ButtonComponent } from "@syncfusion/ej2-react-buttons";
@@ -15,9 +15,12 @@ interface IDynamicFormProps {
     /**
      * Callback function when form is submitted.
      * The data is a record of field name and value
-     * @param data {Record<string, unknown>}
      */
-    onSubmit: (data: Record<string, unknown>) => Promise<void> | void;
+    onSubmit?: (data: Record<string, unknown>) => Promise<void> | void;
+    /**
+     * Callback function when form data changes
+     */
+    onChanges?: (data: Record<string, unknown>, isValid: boolean) => void;
 
     /**
      * Select witch fields to render
@@ -40,6 +43,11 @@ interface IDynamicFormProps {
      * @default undefined
      */
     buttons?: {
+        /**
+         * Hide buttons
+         * @default false
+         */
+        hidden?: boolean;
         /**
          * Text for the submit button
          * @default "Submit"
@@ -157,8 +165,21 @@ export const DynamicForm = (props: IDynamicFormProps) => {
         setValues((prev) => ({ ...prev, [name]: value }));
     };
 
+    /**
+     * On changes listener
+     * Callback when form data changes
+     */
+    useEffect(() => {
+        props.onChanges?.(values, validate(values));
+    }, [props.onChanges, values]);
+
     const handleOnSubmit = async (e?: FormEvent<HTMLFormElement>) => {
         e?.preventDefault();
+        // Check if callback is undefined
+        if (!props.onSubmit) {
+            console.warn("onSubmit callback is not defined");
+            return;
+        }
         // Check nullOnUndefined
         if (props.nullOnUndefined ?? true) {
             for (const field of props.fields) {
@@ -204,35 +225,41 @@ export const DynamicForm = (props: IDynamicFormProps) => {
                 </div>
             ))}
             {/* Buttons */}
-            {props.buttons?.template?.({ onSubmit: handleOnSubmit, onCancel: handleOnCancel }) ?? (
-                <div
-                    style={{ display: "flex", flexDirection: props.buttons?.layout === "vertical" ? "column" : "row" }}
-                    className={props.buttons?.className}
-                >
-                    <ProgressButtonComponent
-                        ref={(el) => (btnSubmit.current = el)}
-                        type="submit"
-                        isPrimary
-                        content={props.buttons?.btnSubmitText ?? "Submit"}
-                        duration={30000} // Default REST API timeout
-                        // Set button properties
-                        {...props.buttons?.btnSubmitProps}
-                    />
-                    {
-                        // Show cancel button
-                        props.buttons?.showBtnCancel && (
-                            <ButtonComponent
-                                type="reset"
-                                content={props.buttons.btnCancelText ?? "Cancel"}
-                                // Set button properties
-                                {...props.buttons.btnCancelProps}
-                                // Callback
-                                onClick={handleOnCancel}
-                            />
-                        )
-                    }
-                </div>
-            )}
+            {props.buttons?.template?.({ onSubmit: handleOnSubmit, onCancel: handleOnCancel }) ??
+                // Check if buttons are hidden
+                (!props.buttons?.hidden && (
+                    <div
+                        data-testid="buttons-container"
+                        style={{
+                            display: "flex",
+                            flexDirection: props.buttons?.layout === "vertical" ? "column" : "row",
+                        }}
+                        className={props.buttons?.className}
+                    >
+                        <ProgressButtonComponent
+                            ref={(el) => (btnSubmit.current = el)}
+                            type="submit"
+                            isPrimary
+                            content={props.buttons?.btnSubmitText ?? "Submit"}
+                            duration={30000} // Default REST API timeout
+                            // Set button properties
+                            {...props.buttons?.btnSubmitProps}
+                        />
+                        {
+                            // Show cancel button
+                            props.buttons?.showBtnCancel && (
+                                <ButtonComponent
+                                    type="reset"
+                                    content={props.buttons.btnCancelText ?? "Cancel"}
+                                    // Set button properties
+                                    {...props.buttons.btnCancelProps}
+                                    // Callback
+                                    onClick={handleOnCancel}
+                                />
+                            )
+                        }
+                    </div>
+                ))}
         </form>
     );
 };

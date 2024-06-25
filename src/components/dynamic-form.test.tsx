@@ -5,15 +5,38 @@ import { EConditionRuleOperator } from "../models/condition";
 import { beforeEach, describe } from "vitest";
 
 // Callback functions
+const onChanges = vi.fn();
 const onSubmit = vi.fn();
 
 describe("Main", () => {
     beforeEach(() => {
-        render(<DynamicForm fields={[]} onSubmit={onSubmit} />);
+        render(<DynamicForm fields={[]} />);
     });
 
     it("renders the form", () => {
         expect(screen.getByTestId("dynamic-form")).toBeInTheDocument();
+    });
+
+    it("renders the buttons", () => {
+        expect(screen.getByTestId("buttons-container")).toBeInTheDocument();
+    });
+});
+
+describe("When values changes", () => {
+    beforeEach(() => {
+        render(
+            <DynamicForm
+                fields={[{ name: "username", type: EFieldType.TEXT, validations: { required: true } }]}
+                onChanges={onChanges}
+            />,
+        );
+    });
+
+    it("calls onChanges callback", () => {
+        act(() =>
+            fireEvent.change(screen.getByTestId("username-syncfusion-field"), { target: { value: "lorem.ipsum" } }),
+        );
+        expect(onChanges).toHaveBeenCalledWith({ username: "lorem.ipsum" }, true);
     });
 });
 
@@ -54,6 +77,16 @@ describe("Field Mode", () => {
         it("renders the Ionic field", () => {
             expect(screen.getByTestId("username-ionic-field")).toBeInTheDocument();
         });
+    });
+});
+
+describe("Hidden buttons", () => {
+    beforeEach(() => {
+        render(<DynamicForm fields={[]} onSubmit={onSubmit} buttons={{ hidden: true }} />);
+    });
+
+    it("doesn't render the buttons", () => {
+        expect(screen.queryByTestId("buttons-container")).not.toBeInTheDocument();
     });
 });
 
