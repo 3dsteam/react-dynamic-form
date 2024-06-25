@@ -9,7 +9,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@3dsteam/react-dynamic-form@workspace:."
   dependencies:
-    "@3dsteam/react-form-validator": "npm:1.1.0-rc.2"
+    "@3dsteam/react-form-validator": "npm:1.1.0-rc.3"
     "@eslint/compat": "npm:^1.1.0"
     "@eslint/js": "npm:^9.5.0"
     "@ionic/react": "npm:^8.2.2"
@@ -47,16 +47,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@3dsteam/react-form-validator@npm:1.1.0-rc.2":
-  version: 1.1.0-rc.2
-  resolution: "@3dsteam/react-form-validator@npm:1.1.0-rc.2::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%403dsteam%2Freact-form-validator%2F1.1.0-rc.2%2F5955a14d83c8cb0fa03a6d39430eac96284a5154"
+"@3dsteam/react-form-validator@npm:1.1.0-rc.3":
+  version: 1.1.0-rc.3
+  resolution: "@3dsteam/react-form-validator@npm:1.1.0-rc.3::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%403dsteam%2Freact-form-validator%2F1.1.0-rc.3%2Fbbee69533b4743d4c264c3da815b67b53b7806b3"
   dependencies:
     moment: "npm:^2.30.1"
     react-i18next: "npm:^14.1.2"
   peerDependencies:
     react: ">=18"
     react-dom: ">=18"
-  checksum: 10c0/6b33e325519f70741248905d8c1b55978ff2cd6df7c3313b803e9a2a40f896dba355d0ace7ee251a1980272ae56879dcbaf3ee008fd81c9fca0e0d590349b5d3
+  checksum: 10c0/e9b8d34f29ed075bd22108781e4c0ebf46131169b7cbaab7019fce02e6c6b267f9a95fdb62e84cad3c1c1f08b9c7565406dfa8ab818287b03cae5d79b73e511a
   languageName: node
   linkType: hard
 
