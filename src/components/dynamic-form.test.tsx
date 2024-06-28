@@ -22,6 +22,27 @@ describe("Main", () => {
     });
 });
 
+describe("Default values", () => {
+    beforeEach(() => {
+        render(
+            <DynamicForm
+                values={{ username: "lorem.ipsum" }}
+                fields={[
+                    {
+                        name: "username",
+                        type: EFieldType.TEXT,
+                        validations: { required: true },
+                    },
+                ]}
+            />,
+        );
+    });
+
+    it("renders the default value", () => {
+        expect(screen.getByTestId("username-syncfusion-field")).toHaveValue("lorem.ipsum");
+    });
+});
+
 describe("When values changes", () => {
     beforeEach(() => {
         render(

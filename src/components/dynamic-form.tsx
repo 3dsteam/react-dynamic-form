@@ -8,6 +8,11 @@ import { EConditionRuleOperator, IConditionRule } from "../models/condition";
 
 interface IDynamicFormProps {
     /**
+     * Initial values for the form
+     * @default undefined
+     */
+    values?: Record<string, unknown>;
+    /**
      * List of fields to render
      * @type IField[]
      */
@@ -105,6 +110,12 @@ interface IDynamicFormProps {
 export const DynamicForm = (props: IDynamicFormProps) => {
     const [values, setValues] = useState<Record<string, unknown>>({});
     const btnSubmit = useRef<ProgressButtonComponent | null>(null);
+
+    /**
+     * Listener for initial values
+     * Set values when props values changes
+     */
+    useEffect(() => setValues(props.values ?? {}), [props.values]);
 
     const mode = useMemo(() => props.mode ?? "syncfusion", [props.mode]);
 
