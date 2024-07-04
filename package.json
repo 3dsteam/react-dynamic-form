@@ -42,7 +42,8 @@
     "@syncfusion/ej2-react-calendars": "^26.1.35",
     "@syncfusion/ej2-react-dropdowns": "^26.1.35",
     "@syncfusion/ej2-react-inputs": "^26.1.35",
-    "@syncfusion/ej2-react-splitbuttons": "^26.1.35"
+    "@syncfusion/ej2-react-splitbuttons": "^26.1.35",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@eslint/compat": "^1.1.0",
@@ -51,6 +52,7 @@
     "@testing-library/dom": "^10.1.0",
     "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/react": "^16.0.0",
+    "@types/lodash": "^4.17.6",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react-swc": "^3.7.0",
