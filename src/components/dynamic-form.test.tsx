@@ -2,7 +2,8 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 import { DynamicForm } from "./dynamic-form";
 import { EFieldType } from "../models/field";
 import { EConditionRuleOperator } from "../models/condition";
-import { beforeEach, describe } from "vitest";
+import { beforeEach, describe, expect } from "vitest";
+import { useState } from "react";
 
 // Callback functions
 const onChanges = vi.fn();
@@ -23,10 +24,16 @@ describe("Main", () => {
 });
 
 describe("Default values", () => {
-    beforeEach(() => {
-        render(
+    /**
+     * Test with React component
+     * This is used to avoid the infinite loop with values and onChanges
+     */
+    const TestComponent = () => {
+        const [values, setValues] = useState<Record<string, unknown>>({ username: "lorem.ipsum" });
+        // Render the component
+        return (
             <DynamicForm
-                values={{ username: "lorem.ipsum" }}
+                values={values}
                 fields={[
                     {
                         name: "username",
@@ -34,30 +41,35 @@ describe("Default values", () => {
                         validations: { required: true },
                     },
                 ]}
-            />,
+                onChanges={(values) => {
+                    setValues(values);
+                    // Call the onChanges callback
+                    onChanges(values, true);
+                }}
+            />
         );
+    };
+
+    beforeEach(() => {
+        render(<TestComponent />);
     });
 
     it("renders the default value", () => {
         expect(screen.getByTestId("username-syncfusion-field")).toHaveValue("lorem.ipsum");
     });
-});
 
-describe("When values changes", () => {
-    beforeEach(() => {
-        render(
-            <DynamicForm
-                fields={[{ name: "username", type: EFieldType.TEXT, validations: { required: true } }]}
-                onChanges={onChanges}
-            />,
-        );
-    });
+    describe("When values changes", () => {
+        beforeEach(() => {
+            act(() =>
+                fireEvent.change(screen.getByTestId("username-syncfusion-field"), {
+                    target: { value: "dolor.sit.amet" },
+                }),
+            );
+        });
 
-    it("calls onChanges callback", () => {
-        act(() =>
-            fireEvent.change(screen.getByTestId("username-syncfusion-field"), { target: { value: "lorem.ipsum" } }),
-        );
-        expect(onChanges).toHaveBeenCalledWith({ username: "lorem.ipsum" }, true);
+        it("calls onChanges callback", () => {
+            expect(onChanges).toHaveBeenCalledWith({ username: "dolor.sit.amet" }, true);
+        });
     });
 });
 

@@ -5,6 +5,7 @@ import { ButtonComponent } from "@syncfusion/ej2-react-buttons";
 import useFormValidator, { IRule } from "@3dsteam/react-form-validator";
 import { ProgressButtonComponent } from "@syncfusion/ej2-react-splitbuttons";
 import { EConditionRuleOperator, IConditionRule } from "../models/condition";
+import _ from "lodash";
 
 interface IDynamicFormProps {
     /**
@@ -108,14 +109,16 @@ interface IDynamicFormProps {
 }
 
 export const DynamicForm = (props: IDynamicFormProps) => {
-    const [values, setValues] = useState<Record<string, unknown>>({});
+    const [values, setValues] = useState<Record<string, unknown>>(props.values ?? {});
     const btnSubmit = useRef<ProgressButtonComponent | null>(null);
 
     /**
      * Listener for initial values
      * Set values when props values changes
      */
-    useEffect(() => setValues(props.values ?? {}), [props.values]);
+    useEffect(() => {
+        setValues(props.values ?? {});
+    }, [props.values]);
 
     const mode = useMemo(() => props.mode ?? "syncfusion", [props.mode]);
 
@@ -181,8 +184,10 @@ export const DynamicForm = (props: IDynamicFormProps) => {
      * Callback when form data changes
      */
     useEffect(() => {
+        // Check if values are the same as props
+        if (!props.onChanges || _.isEqual(values, props.values)) return;
         props.onChanges?.(values, validate(values));
-    }, [props.onChanges, values]);
+    }, [props.values, props.onChanges, values]);
 
     const handleOnSubmit = async (e?: FormEvent<HTMLFormElement>) => {
         e?.preventDefault();
