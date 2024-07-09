@@ -6,6 +6,9 @@ import useFormValidator, { IRule } from "@3dsteam/react-form-validator";
 import { ProgressButtonComponent } from "@syncfusion/ej2-react-splitbuttons";
 import { EConditionRuleOperator, IConditionRule } from "../models/condition";
 import _ from "lodash";
+import { IFieldGroup } from "../models/group";
+import { InputFieldGroup } from "./input-field-group";
+import DynamicFormContext from "../context/dynamic-form";
 
 interface IDynamicFormProps {
     /**
@@ -15,9 +18,8 @@ interface IDynamicFormProps {
     values?: Record<string, unknown>;
     /**
      * List of fields to render
-     * @type IField[]
      */
-    fields: IField[];
+    fields: (IField | IFieldGroup)[];
     /**
      * Callback function when form is submitted.
      * The data is a record of field name and value
@@ -168,7 +170,15 @@ export const DynamicForm = (props: IDynamicFormProps) => {
         data: values,
         rules: fields.reduce(
             (acc, field) => {
-                if (field.validations) acc[field.name] = field.validations;
+                const setGroupValidation = (group: IFieldGroup) => {
+                    group.fields.forEach((field) => {
+                        if ("fields" in field) setGroupValidation(field);
+                        else if (field.validations) acc[field.name] = field.validations;
+                    });
+                };
+                // Check if field is a group
+                if ("fields" in field) setGroupValidation(field);
+                else if (field.validations) acc[field.name] = field.validations;
                 return acc;
             },
             {} as Record<string, IRule>,
@@ -222,24 +232,14 @@ export const DynamicForm = (props: IDynamicFormProps) => {
 
     return (
         <form data-testid="dynamic-form" onSubmit={handleOnSubmit} className={props.className}>
-            {/* Fields */}
-            {fields.map((field) => (
-                <div key={field.name} className={field.className}>
-                    {/* Label */}
-                    {field.label && mode !== "ionic" && <label form={field.name + "-field"}>{field.label}</label>}
-                    {/* Input */}
-                    <InputField
-                        field={field}
-                        mode={mode}
-                        value={values[field.name]}
-                        onChange={(value) => handleOnFieldChange(field.name, value)}
-                    />
-                    {/* Help Text */}
-                    {field.helpText && <p style={{ color: "gray", fontSize: "small" }}>{field.helpText}</p>}
-                    {/* Error */}
-                    {errors[field.name] && <p style={{ color: "red", fontSize: "small" }}>{errors[field.name]}</p>}
-                </div>
-            ))}
+            <DynamicFormContext.Provider value={{ mode, values, onChange: handleOnFieldChange, errors }}>
+                {/* Fields */}
+                {fields.map((field) => {
+                    // Check if field is a group
+                    if ("fields" in field) return <InputFieldGroup key={field.name} {...field} />;
+                    return <InputField key={field.name} {...field} />;
+                })}
+            </DynamicFormContext.Provider>
             {/* Buttons */}
             {props.buttons?.template?.({ onSubmit: handleOnSubmit, onCancel: handleOnCancel }) ??
                 // Check if buttons are hidden

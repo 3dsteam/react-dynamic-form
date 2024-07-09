@@ -1,27 +1,52 @@
 import { IField } from "../models/field";
 import { SyncfusionField } from "./fields/syncfusion-field";
 import { IonicField } from "./fields/ionic-field";
+import { useContext, useMemo } from "react";
+import DynamicFormContext from "../context/dynamic-form";
 
-export interface IInputFieldProps {
-    field: IField;
-    value: unknown;
-    onChange: (value: unknown) => void;
-    /**
-     * Rendering the field in a different mode
-     * @default "syncfusion"
-     */
-    mode: "syncfusion" | "ionic";
-}
+export const InputField = (field: IField) => {
+    const { mode, values, onChange, errors } = useContext(DynamicFormContext);
 
-export const InputField = (props: IInputFieldProps) => {
-    // Check custom render
-    if (props.field.template) {
-        return props.field.template(props);
-    }
-    // Check mode
-    else if (!props.mode || props.mode === "syncfusion") {
-        return <SyncfusionField {...props} />;
-    } else if (props.mode === "ionic") {
-        return <IonicField {...props} />;
-    }
+    // Check field type
+    const inputField = useMemo(() => {
+        // Check custom render
+        if (field.template) {
+            return field.template({
+                field: field,
+                value: values[field.name],
+                onChange: (value) => onChange(field.name, value),
+            });
+        }
+        // Check mode
+        else if (!mode || mode === "syncfusion") {
+            return (
+                <SyncfusionField
+                    field={field}
+                    value={values[field.name]}
+                    onChange={(value) => onChange(field.name, value)}
+                />
+            );
+        } else if (mode === "ionic") {
+            return (
+                <IonicField
+                    field={field}
+                    value={values[field.name]}
+                    onChange={(value) => onChange(field.name, value)}
+                />
+            );
+        }
+    }, [field, mode]);
+
+    return (
+        <div data-testid={"field-" + field.name} className={field.className}>
+            {/* Label */}
+            {field.label && mode !== "ionic" && <label form={field.name + "-field"}>{field.label}</label>}
+            {/* Input */}
+            {inputField}
+            {/* Help Text */}
+            {field.helpText && <p style={{ color: "gray", fontSize: "small" }}>{field.helpText}</p>}
+            {/* Error */}
+            {errors[field.name] && <p style={{ color: "red", fontSize: "small" }}>{errors[field.name]}</p>}
+        </div>
+    );
 };

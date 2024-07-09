@@ -1,12 +1,17 @@
-import { IInputFieldProps } from "../input-field";
-import { EFieldType } from "../../models/field";
+import { EFieldType, IField } from "../../models/field";
 import { NumericTextBoxComponent, TextAreaComponent, TextBoxComponent } from "@syncfusion/ej2-react-inputs";
 import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
 import { AutoCompleteComponent, DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import { CheckBoxComponent } from "@syncfusion/ej2-react-buttons";
 import { GenericField } from "./generic-field";
 
-export const SyncfusionField = (props: Omit<IInputFieldProps, "mode">) => {
+interface ISyncfusionFieldProps {
+    field: IField;
+    value: unknown;
+    onChange: (value: unknown) => void;
+}
+
+export const SyncfusionField = (props: ISyncfusionFieldProps) => {
     if (
         props.field.type === EFieldType.TEXT ||
         props.field.type === EFieldType.EMAIL ||

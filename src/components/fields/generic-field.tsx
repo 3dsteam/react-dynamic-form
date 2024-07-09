@@ -1,6 +1,12 @@
-import { IInputFieldProps } from "../input-field";
+import { IField } from "../../models/field";
 
-export const GenericField = (props: Omit<IInputFieldProps, "mode">) => {
+interface IGenericFieldProps {
+    field: IField;
+    value: unknown;
+    onChange: (value: unknown) => void;
+}
+
+export const GenericField = (props: IGenericFieldProps) => {
     return (
         <input
             id={props.field.name + "-field"}

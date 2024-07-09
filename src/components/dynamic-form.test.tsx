@@ -336,3 +336,73 @@ describe("Render conditions", () => {
         });
     });
 });
+
+describe("Group fields", () => {
+    beforeEach(() => {
+        render(
+            <DynamicForm
+                fields={[
+                    {
+                        name: "identification",
+                        fields: [
+                            {
+                                name: "firstname",
+                                type: EFieldType.TEXT,
+                            },
+                            {
+                                name: "lastname",
+                                type: EFieldType.TEXT,
+                            },
+                        ],
+                    },
+                    {
+                        name: "contacts",
+                        fields: [
+                            {
+                                name: "email",
+                                fields: [
+                                    {
+                                        name: "email",
+                                        type: EFieldType.EMAIL,
+                                    },
+                                ],
+                            },
+                            {
+                                name: "phone",
+                                type: EFieldType.TEXT,
+                            },
+                        ],
+                    },
+                ]}
+            />,
+        );
+    });
+
+    it("renders the identification group", () => {
+        expect(screen.getByTestId("group-identification")).toBeInTheDocument();
+    });
+
+    it("renders the firstname field", () => {
+        expect(screen.getByTestId("field-firstname")).toBeInTheDocument();
+    });
+
+    it("renders the lastname field", () => {
+        expect(screen.getByTestId("field-lastname")).toBeInTheDocument();
+    });
+
+    it("renders the contacts group", () => {
+        expect(screen.getByTestId("group-contacts")).toBeInTheDocument();
+    });
+
+    it("renders the email group", () => {
+        expect(screen.getByTestId("group-email")).toBeInTheDocument();
+    });
+
+    it("renders the email field", () => {
+        expect(screen.getByTestId("field-email")).toBeInTheDocument();
+    });
+
+    it("renders the phone field", () => {
+        expect(screen.getByTestId("field-phone")).toBeInTheDocument();
+    });
+});
