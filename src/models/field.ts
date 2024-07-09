@@ -52,5 +52,6 @@ export enum EFieldType {
     DATE = "DATE",
     EMAIL = "EMAIL",
     SELECT = "SELECT",
+    AUTOCOMPLETE = "AUTOCOMPLETE",
     CHECKBOX = "CHECKBOX",
 }

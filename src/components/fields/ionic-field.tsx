@@ -52,6 +52,8 @@ export const IonicField = (props: Omit<IInputFieldProps, "mode">) => {
         );
     } else if (props.field.type === EFieldType.DATE) {
         return <>Wip</>;
+    } else if (props.field.type === EFieldType.AUTOCOMPLETE) {
+        return <>Wip</>;
     } else if (props.field.type === EFieldType.SELECT) {
         return (
             <IonItem>

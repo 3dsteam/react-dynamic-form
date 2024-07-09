@@ -2,7 +2,7 @@ import { IInputFieldProps } from "../input-field";
 import { EFieldType } from "../../models/field";
 import { NumericTextBoxComponent, TextAreaComponent, TextBoxComponent } from "@syncfusion/ej2-react-inputs";
 import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
-import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
+import { AutoCompleteComponent, DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import { CheckBoxComponent } from "@syncfusion/ej2-react-buttons";
 import { GenericField } from "./generic-field";
 
@@ -79,6 +79,21 @@ export const SyncfusionField = (props: Omit<IInputFieldProps, "mode">) => {
     } else if (props.field.type === EFieldType.SELECT) {
         return (
             <DropDownListComponent
+                id={props.field.name + "-syncfusion-field"}
+                data-testid={props.field.name + "-syncfusion-field"}
+                // Set ALL other properties
+                {...props.field.props}
+                // Identifier
+                name={props.field.name}
+                placeholder={props.field.placeholder}
+                // Value
+                value={(props.value as string) ?? null}
+                change={(args) => props.onChange(args.value)}
+            />
+        );
+    } else if (props.field.type === EFieldType.AUTOCOMPLETE) {
+        return (
+            <AutoCompleteComponent
                 id={props.field.name + "-syncfusion-field"}
                 data-testid={props.field.name + "-syncfusion-field"}
                 // Set ALL other properties
