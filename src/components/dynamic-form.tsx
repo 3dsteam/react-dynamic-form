@@ -129,37 +129,55 @@ export const DynamicForm = (props: IDynamicFormProps) => {
      * Filter fields based on conditions
      */
     const fields = useMemo(() => {
-        return props.fields.filter((field) => {
-            if (!field.conditions) return true;
-            // Check value conditions
-            const checkConditions = (rule: IConditionRule) => {
-                const value = values[rule.field];
-                let ruleValue = rule.value;
-                // Check if rule value is a dynamic value {{field}}
-                if (typeof rule.value === "string") {
-                    const match = rule.value.match(/{{([^}]*)}}/);
-                    if (match) ruleValue = values[match[1].trim()];
-                }
-                // Check for different operators
-                switch (rule.operator) {
-                    case EConditionRuleOperator.EQUAL:
-                        return value === ruleValue;
-                    case EConditionRuleOperator.NOT_EQUAL:
-                        return value !== ruleValue;
-                    case EConditionRuleOperator.IS_NULL:
-                    case EConditionRuleOperator.IS_EMPTY:
-                        return !value;
-                    case EConditionRuleOperator.IS_NOT_NULL:
-                    case EConditionRuleOperator.IS_NOT_EMPTY:
-                        return !!value;
-                    default:
-                        return true;
-                }
-            };
-            // Check for different conditions
-            if (field.conditions.condition === "or") return field.conditions.rules.some(checkConditions);
-            return field.conditions.rules.every(checkConditions);
-        });
+        // Check value conditions
+        const checkConditions = (rule: IConditionRule) => {
+            const value = values[rule.field];
+            let ruleValue = rule.value;
+            // Check if rule value is a dynamic value {{field}}
+            if (typeof rule.value === "string") {
+                const match = rule.value.match(/{{([^}]*)}}/);
+                if (match) ruleValue = values[match[1].trim()];
+            }
+            // Check for different operators
+            switch (rule.operator) {
+                case EConditionRuleOperator.EQUAL:
+                    return value === ruleValue;
+                case EConditionRuleOperator.NOT_EQUAL:
+                    return value !== ruleValue;
+                case EConditionRuleOperator.IS_NULL:
+                case EConditionRuleOperator.IS_EMPTY:
+                    return !value;
+                case EConditionRuleOperator.IS_NOT_NULL:
+                case EConditionRuleOperator.IS_NOT_EMPTY:
+                    return !!value;
+                default:
+                    return true;
+            }
+        };
+        // Map fields
+        const mapFields = (fields: (IField | IFieldGroup)[]) => {
+            return fields
+                .map((field) => {
+                    const FIELD = { ...field };
+                    // Check field / group condition
+                    if (FIELD.conditions) {
+                        if (FIELD.conditions.condition === "or" && !FIELD.conditions.rules.some(checkConditions)) {
+                            return null;
+                        } else if (
+                            FIELD.conditions.condition === "and" &&
+                            !FIELD.conditions.rules.every(checkConditions)
+                        ) {
+                            return null;
+                        }
+                    }
+                    // Check group fields
+                    if ("fields" in FIELD) FIELD.fields = mapFields(FIELD.fields);
+                    return FIELD;
+                })
+                .filter((field) => field !== null) as (IField | IFieldGroup)[];
+        };
+        // Return fields
+        return mapFields([...props.fields]);
     }, [values, props.fields]);
 
     /**

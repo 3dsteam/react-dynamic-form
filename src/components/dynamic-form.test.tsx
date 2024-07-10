@@ -335,6 +335,84 @@ describe("Render conditions", () => {
             });
         });
     });
+
+    describe("When fields are grouped and have render conditions", () => {
+        beforeEach(() => {
+            render(
+                <DynamicForm
+                    fields={[
+                        { name: "username", type: EFieldType.TEXT },
+                        {
+                            name: "group",
+                            conditions: {
+                                condition: "and",
+                                rules: [
+                                    {
+                                        field: "username",
+                                        operator: EConditionRuleOperator.IS_NOT_EMPTY,
+                                        value: null,
+                                    },
+                                ],
+                            },
+                            fields: [
+                                {
+                                    name: "password",
+                                    type: EFieldType.PASSWORD,
+                                    conditions: {
+                                        condition: "and",
+                                        rules: [
+                                            {
+                                                field: "username",
+                                                operator: EConditionRuleOperator.EQUAL,
+                                                value: "lorem.ipsum",
+                                            },
+                                        ],
+                                    },
+                                },
+                            ],
+                        },
+                    ]}
+                    onSubmit={onSubmit}
+                />,
+            );
+        });
+
+        it("doesn't render the password field", () => {
+            expect(screen.queryByTestId("password-syncfusion-field")).not.toBeInTheDocument();
+        });
+
+        describe("When username is filled with different value", () => {
+            beforeEach(() => {
+                act(() =>
+                    fireEvent.change(screen.getByTestId("username-syncfusion-field"), {
+                        target: { value: "lorem" },
+                    }),
+                );
+            });
+
+            it("renders the group", () => {
+                expect(screen.queryByTestId("group-group")).toBeInTheDocument();
+            });
+
+            it("doesn't render the password field", () => {
+                expect(screen.queryByTestId("password-syncfusion-field")).not.toBeInTheDocument();
+            });
+        });
+
+        describe("When username is filled with expected value", () => {
+            beforeEach(() => {
+                act(() =>
+                    fireEvent.change(screen.getByTestId("username-syncfusion-field"), {
+                        target: { value: "lorem.ipsum" },
+                    }),
+                );
+            });
+
+            it("renders the password field", () => {
+                expect(screen.getByTestId("password-syncfusion-field")).toBeInTheDocument();
+            });
+        });
+    });
 });
 
 describe("Group fields", () => {
