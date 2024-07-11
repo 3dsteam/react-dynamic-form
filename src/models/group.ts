@@ -5,7 +5,7 @@ export interface IFieldGroup {
     /**
      * Group identifier
      */
-    name: string;
+    name?: string;
     /**
      * Group title
      * @default undefined

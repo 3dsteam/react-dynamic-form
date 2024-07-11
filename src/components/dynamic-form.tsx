@@ -256,9 +256,9 @@ export const DynamicForm = (props: IDynamicFormProps) => {
         <form data-testid="dynamic-form" onSubmit={handleOnSubmit} className={props.className}>
             <DynamicFormContext.Provider value={{ mode, values, onChange: handleOnFieldChange, errors }}>
                 {/* Fields */}
-                {fields.map((field) => {
+                {fields.map((field, index) => {
                     // Check if field is a group
-                    if ("fields" in field) return <InputFieldGroup key={field.name} {...field} />;
+                    if ("fields" in field) return <InputFieldGroup key={`group-${index}`} {...field} />;
                     return <InputField key={field.name} {...field} />;
                 })}
             </DynamicFormContext.Provider>
