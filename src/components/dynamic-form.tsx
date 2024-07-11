@@ -188,10 +188,11 @@ export const DynamicForm = (props: IDynamicFormProps) => {
         data: values,
         rules: fields.reduce(
             (acc, field) => {
-                const setGroupValidation = (group: IFieldGroup) => {
+                const setGroupValidation = (group: IFieldGroup, prefix?: string) => {
+                    const name = prefix ? (field.name ? prefix + "___" + field.name : prefix) : field.name;
                     group.fields.forEach((field) => {
-                        if ("fields" in field) setGroupValidation(field);
-                        else if (field.validations) acc[field.name] = field.validations;
+                        if ("fields" in field) setGroupValidation(field, name);
+                        else if (field.validations) acc[name!] = field.validations;
                     });
                 };
                 // Check if field is a group
@@ -227,18 +228,34 @@ export const DynamicForm = (props: IDynamicFormProps) => {
         // Check nullOnUndefined
         if (props.nullOnUndefined ?? true) {
             // Recursive function to set null values
-            const setNullValues = (fields: (IField | IFieldGroup)[]) => {
+            const setNullValues = (fields: (IField | IFieldGroup)[], prefix?: string) => {
                 fields.forEach((field) => {
-                    if ("fields" in field) setNullValues(field.fields);
-                    else if (values[field.name] === undefined) values[field.name] = null;
+                    const name = prefix ? (field.name ? prefix + "___" + field.name : prefix) : field.name;
+                    if ("fields" in field) setNullValues(field.fields, name);
+                    else if (values[name!] === undefined) values[name!] = null;
                 });
             };
             // Set null values
             setNullValues(fields);
         }
+
         // Validate form and callback
         if (validate(values)) {
-            await props.onSubmit(values);
+            const structuredValues = {} as Record<string, unknown>;
+            for (const key in values) {
+                const setGroupValues = (keyGroup: string, parent: Record<string, unknown>) => {
+                    const [group, keyValue] = keyGroup.split(/___(.*)/s);
+                    if (!parent[group]) parent[group] = {};
+                    // Check if key is a group
+                    if (keyValue.includes("___")) setGroupValues(keyValue, parent[group] as Record<string, unknown>);
+                    else (parent[group] as Record<string, unknown>)[keyValue] = values[key];
+                };
+                // Add values to structured object
+                if (key.includes("___")) setGroupValues(key, structuredValues);
+                else structuredValues[key] = values[key];
+            }
+            // Callback
+            await props.onSubmit(structuredValues);
             // Clear form
             if (props.clearOnSubmit) {
                 handleOnCancel();

@@ -17,7 +17,7 @@ export const InputField = (field: IInputFieldProps) => {
         // Check custom render
         if (field.template) {
             return field.template({
-                field: field,
+                field: { ...field, name: fieldName },
                 value: values[fieldName],
                 onChange: (value) => onChange(fieldName, value),
             });
@@ -26,14 +26,18 @@ export const InputField = (field: IInputFieldProps) => {
         else if (!mode || mode === "syncfusion") {
             return (
                 <SyncfusionField
-                    field={field}
+                    field={{ ...field, name: fieldName }}
                     value={values[fieldName]}
                     onChange={(value) => onChange(fieldName, value)}
                 />
             );
         } else if (mode === "ionic") {
             return (
-                <IonicField field={field} value={values[fieldName]} onChange={(value) => onChange(fieldName, value)} />
+                <IonicField
+                    field={{ ...field, name: fieldName }}
+                    value={values[fieldName]}
+                    onChange={(value) => onChange(fieldName, value)}
+                />
             );
         }
     }, [field, mode]);

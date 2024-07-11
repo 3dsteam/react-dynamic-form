@@ -81,9 +81,9 @@ describe("Set null on undefined", () => {
                     { name: "username", type: EFieldType.TEXT },
                     { name: "password", type: EFieldType.PASSWORD },
                     {
-                        name: "privacy-policy",
+                        name: "privacy",
                         fields: [
-                            { name: "accept", type: EFieldType.CHECKBOX },
+                            { name: "username", type: EFieldType.TEXT },
                             { name: "date", type: EFieldType.DATE },
                         ],
                     },
@@ -99,16 +99,25 @@ describe("Set null on undefined", () => {
             />,
         );
 
+        // Fill some fields
+        act(() => {
+            fireEvent.change(screen.getByTestId("username-syncfusion-field"), {
+                target: { value: "lorem" },
+            });
+            fireEvent.change(screen.getByTestId("privacy___username-syncfusion-field"), {
+                target: { value: "lorem ipsum" },
+            });
+        });
+
         // Click on the submit button
         act(() => fireEvent.click(screen.getByTestId("mock-on-submit")));
     });
 
     it("calls the onSubmit callback with null values", () => {
         expect(onSubmit).toHaveBeenCalledWith({
-            username: null,
+            username: "lorem",
             password: null,
-            accept: null,
-            date: null,
+            privacy: { username: "lorem ipsum", date: null },
         });
     });
 });
@@ -116,7 +125,7 @@ describe("Set null on undefined", () => {
 describe("Field Mode", () => {
     describe("When mode is not set", () => {
         beforeEach(() => {
-            render(<DynamicForm fields={[{ name: "username", type: EFieldType.TEXT }]} onSubmit={onSubmit} />);
+            render(<DynamicForm fields={[{ name: "username", type: EFieldType.TEXT }]} />);
         });
 
         it("renders the Syncfusion field by default", () => {
@@ -126,13 +135,7 @@ describe("Field Mode", () => {
 
     describe("When mode is set to 'syncfusion'", () => {
         beforeEach(() => {
-            render(
-                <DynamicForm
-                    fields={[{ name: "username", type: EFieldType.TEXT }]}
-                    mode="syncfusion"
-                    onSubmit={onSubmit}
-                />,
-            );
+            render(<DynamicForm fields={[{ name: "username", type: EFieldType.TEXT }]} mode="syncfusion" />);
         });
 
         it("renders the Syncfusion field", () => {
@@ -142,9 +145,7 @@ describe("Field Mode", () => {
 
     describe("When mode is set to 'ionic'", () => {
         beforeEach(() => {
-            render(
-                <DynamicForm fields={[{ name: "username", type: EFieldType.TEXT }]} mode="ionic" onSubmit={onSubmit} />,
-            );
+            render(<DynamicForm fields={[{ name: "username", type: EFieldType.TEXT }]} mode="ionic" />);
         });
 
         it("renders the Ionic field", () => {
@@ -155,7 +156,7 @@ describe("Field Mode", () => {
 
 describe("Hidden buttons", () => {
     beforeEach(() => {
-        render(<DynamicForm fields={[]} onSubmit={onSubmit} buttons={{ hidden: true }} />);
+        render(<DynamicForm fields={[]} buttons={{ hidden: true }} />);
     });
 
     it("doesn't render the buttons", () => {
@@ -185,7 +186,6 @@ describe("Render conditions", () => {
                             },
                         },
                     ]}
-                    onSubmit={onSubmit}
                 />,
             );
         });
@@ -227,7 +227,6 @@ describe("Render conditions", () => {
                             },
                         },
                     ]}
-                    onSubmit={onSubmit}
                 />,
             );
         });
@@ -281,7 +280,6 @@ describe("Render conditions", () => {
                             },
                         },
                     ]}
-                    onSubmit={onSubmit}
                 />,
             );
         });
@@ -336,7 +334,6 @@ describe("Render conditions", () => {
                             },
                         },
                     ]}
-                    onSubmit={onSubmit}
                 />,
             );
         });
@@ -412,7 +409,6 @@ describe("Render conditions", () => {
                             ],
                         },
                     ]}
-                    onSubmit={onSubmit}
                 />,
             );
         });
@@ -435,7 +431,7 @@ describe("Render conditions", () => {
             });
 
             it("doesn't render the password field", () => {
-                expect(screen.queryByTestId("password-syncfusion-field")).not.toBeInTheDocument();
+                expect(screen.queryByTestId("group___password-syncfusion-field")).not.toBeInTheDocument();
             });
         });
 
@@ -449,7 +445,83 @@ describe("Render conditions", () => {
             });
 
             it("renders the password field", () => {
-                expect(screen.getByTestId("password-syncfusion-field")).toBeInTheDocument();
+                expect(screen.getByTestId("group___password-syncfusion-field")).toBeInTheDocument();
+            });
+        });
+    });
+
+    describe("When fields are grouped and have render conditions with dynamic value", () => {
+        beforeEach(() => {
+            render(
+                <DynamicForm
+                    fields={[
+                        { name: "username", type: EFieldType.TEXT },
+                        { name: "password", type: EFieldType.PASSWORD },
+                        {
+                            name: "check",
+                            fields: [{ name: "confirm", type: EFieldType.PASSWORD }],
+                        },
+                        {
+                            name: "privacy",
+                            type: EFieldType.CHECKBOX,
+                            conditions: {
+                                condition: "and",
+                                rules: [
+                                    { field: "password", operator: EConditionRuleOperator.IS_NOT_EMPTY, value: null },
+                                    // Same as: { field: "check___confirm", operator: EConditionRuleOperator.EQUAL, value: "{{password}}" },
+                                    {
+                                        field: "password",
+                                        operator: EConditionRuleOperator.EQUAL,
+                                        value: "{{check___confirm}}",
+                                    },
+                                    {
+                                        field: "check___confirm",
+                                        operator: EConditionRuleOperator.EQUAL,
+                                        value: "{{password}}",
+                                    },
+                                ],
+                            },
+                        },
+                    ]}
+                />,
+            );
+        });
+
+        it("doesn't render the privacy field", () => {
+            expect(screen.queryByTestId("privacy-syncfusion-field")).not.toBeInTheDocument();
+        });
+
+        describe("When password and confirm are filled with different value", () => {
+            beforeEach(() => {
+                act(() =>
+                    fireEvent.change(screen.getByTestId("password-syncfusion-field"), { target: { value: "lorem" } }),
+                );
+                act(() =>
+                    fireEvent.change(screen.getByTestId("check___confirm-syncfusion-field"), {
+                        target: { value: "ipsum" },
+                    }),
+                );
+            });
+
+            it("doesn't render the privacy field", () => {
+                expect(screen.queryByTestId("privacy-syncfusion-field")).not.toBeInTheDocument();
+            });
+        });
+
+        describe("When password and confirm are filled with same value", () => {
+            beforeEach(() => {
+                act(() =>
+                    fireEvent.change(screen.getByTestId("password-syncfusion-field"), { target: { value: "lorem" } }),
+                );
+                act(() =>
+                    fireEvent.change(screen.getByTestId("check___confirm-syncfusion-field"), {
+                        target: { value: "lorem" },
+                    }),
+                );
+            });
+
+            it("renders the privacy field", () => {
+                expect(screen.getByTestId("privacy-syncfusion-field")).toBeInTheDocument();
             });
         });
     });
@@ -489,9 +561,25 @@ describe("Group fields", () => {
                                 name: "phone",
                                 type: EFieldType.TEXT,
                             },
+                            {
+                                fields: [
+                                    {
+                                        name: "address",
+                                        type: EFieldType.TEXT,
+                                    },
+                                ],
+                            },
                         ],
                     },
                 ]}
+                onSubmit={onSubmit}
+                buttons={{
+                    template: ({ onSubmit }) => (
+                        <button data-testid="mock-on-submit" onClick={onSubmit}>
+                            Submit
+                        </button>
+                    ),
+                }}
             />,
         );
     });
@@ -501,26 +589,65 @@ describe("Group fields", () => {
     });
 
     it("renders the firstname field", () => {
-        expect(screen.getByTestId("field-firstname")).toBeInTheDocument();
+        expect(screen.getByTestId("field-identification___firstname")).toBeInTheDocument();
     });
 
     it("renders the lastname field", () => {
-        expect(screen.getByTestId("field-lastname")).toBeInTheDocument();
-    });
-
-    it("renders the contacts group", () => {
-        expect(screen.getByTestId("group-contacts")).toBeInTheDocument();
+        expect(screen.getByTestId("field-identification___lastname")).toBeInTheDocument();
     });
 
     it("renders the email group", () => {
-        expect(screen.getByTestId("group-email")).toBeInTheDocument();
+        expect(screen.getByTestId("group-contacts___email")).toBeInTheDocument();
     });
 
     it("renders the email field", () => {
-        expect(screen.getByTestId("field-email")).toBeInTheDocument();
+        expect(screen.getByTestId("field-contacts___email___email")).toBeInTheDocument();
     });
 
     it("renders the phone field", () => {
-        expect(screen.getByTestId("field-phone")).toBeInTheDocument();
+        expect(screen.getByTestId("field-contacts___phone")).toBeInTheDocument();
+    });
+
+    it("renders the address field", () => {
+        expect(screen.getByTestId("field-contacts___address")).toBeInTheDocument();
+    });
+
+    describe("When user fills and submit the form", () => {
+        beforeEach(() => {
+            // Fill the form
+            act(() => {
+                fireEvent.change(screen.getByTestId("identification___firstname-syncfusion-field"), {
+                    target: { value: "lorem" },
+                });
+                fireEvent.change(screen.getByTestId("identification___lastname-syncfusion-field"), {
+                    target: { value: "ipsum" },
+                });
+                fireEvent.change(screen.getByTestId("contacts___email___email-syncfusion-field"), {
+                    target: { value: "lorem.ipsum@gmail.com" },
+                });
+                fireEvent.change(screen.getByTestId("contacts___phone-syncfusion-field"), {
+                    target: { value: "+391234567890" },
+                });
+                fireEvent.change(screen.getByTestId("contacts___address-syncfusion-field"), {
+                    target: { value: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
+                });
+            });
+            // Fire onSubmit
+            act(() => fireEvent.click(screen.getByTestId("mock-on-submit")));
+        });
+
+        it("calls the onSubmit callback with values", () => {
+            expect(onSubmit).toHaveBeenCalledWith({
+                identification: {
+                    firstname: "lorem",
+                    lastname: "ipsum",
+                },
+                contacts: {
+                    email: { email: "lorem.ipsum@gmail.com" },
+                    phone: "+391234567890",
+                    address: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                },
+            });
+        });
     });
 });

@@ -6,7 +6,7 @@ interface InputFieldGroupProps extends IFieldGroup {
 }
 
 export const InputFieldGroup = (group: InputFieldGroupProps) => {
-    const groupName = group.prefix ? group.prefix + "___" + group.name : group.name;
+    const groupName = group.prefix ? (group.name ? group.prefix + "___" + group.name : group.prefix) : group.name;
 
     return (
         <div data-testid={"group-" + groupName} className={group.className}>
@@ -27,7 +27,11 @@ export const InputFieldGroup = (group: InputFieldGroupProps) => {
                 return (
                     <div key={index}>
                         {/* Check if the field is a group */}
-                        {"fields" in field ? <InputFieldGroup {...field} /> : <InputField {...field} />}
+                        {"fields" in field ? (
+                            <InputFieldGroup {...{ ...field, prefix: groupName }} />
+                        ) : (
+                            <InputField {...{ ...field, prefix: groupName }} />
+                        )}
                     </div>
                 );
             })}
