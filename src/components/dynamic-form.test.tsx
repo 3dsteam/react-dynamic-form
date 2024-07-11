@@ -73,6 +73,46 @@ describe("Default values", () => {
     });
 });
 
+describe("Set null on undefined", () => {
+    beforeEach(() => {
+        render(
+            <DynamicForm
+                fields={[
+                    { name: "username", type: EFieldType.TEXT },
+                    { name: "password", type: EFieldType.PASSWORD },
+                    {
+                        name: "privacy-policy",
+                        fields: [
+                            { name: "accept", type: EFieldType.CHECKBOX },
+                            { name: "date", type: EFieldType.DATE },
+                        ],
+                    },
+                ]}
+                onSubmit={onSubmit}
+                buttons={{
+                    template: ({ onSubmit }) => (
+                        <button data-testid="mock-on-submit" onClick={onSubmit}>
+                            Submit
+                        </button>
+                    ),
+                }}
+            />,
+        );
+
+        // Click on the submit button
+        act(() => fireEvent.click(screen.getByTestId("mock-on-submit")));
+    });
+
+    it("calls the onSubmit callback with null values", () => {
+        expect(onSubmit).toHaveBeenCalledWith({
+            username: null,
+            password: null,
+            accept: null,
+            date: null,
+        });
+    });
+});
+
 describe("Field Mode", () => {
     describe("When mode is not set", () => {
         beforeEach(() => {

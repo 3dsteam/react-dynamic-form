@@ -226,11 +226,15 @@ export const DynamicForm = (props: IDynamicFormProps) => {
         }
         // Check nullOnUndefined
         if (props.nullOnUndefined ?? true) {
-            for (const field of props.fields) {
-                if (values[field.name] === undefined) {
-                    values[field.name] = null;
-                }
-            }
+            // Recursive function to set null values
+            const setNullValues = (fields: (IField | IFieldGroup)[]) => {
+                fields.forEach((field) => {
+                    if ("fields" in field) setNullValues(field.fields);
+                    else if (values[field.name] === undefined) values[field.name] = null;
+                });
+            };
+            // Set null values
+            setNullValues(fields);
         }
         // Validate form and callback
         if (validate(values)) {
