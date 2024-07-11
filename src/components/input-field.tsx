@@ -4,8 +4,13 @@ import { IonicField } from "./fields/ionic-field";
 import { useContext, useMemo } from "react";
 import DynamicFormContext from "../context/dynamic-form";
 
-export const InputField = (field: IField) => {
+interface IInputFieldProps extends IField {
+    prefix?: string;
+}
+
+export const InputField = (field: IInputFieldProps) => {
     const { mode, values, onChange, errors } = useContext(DynamicFormContext);
+    const fieldName = field.prefix ? field.prefix + "___" + field.name : field.name;
 
     // Check field type
     const inputField = useMemo(() => {
@@ -13,8 +18,8 @@ export const InputField = (field: IField) => {
         if (field.template) {
             return field.template({
                 field: field,
-                value: values[field.name],
-                onChange: (value) => onChange(field.name, value),
+                value: values[fieldName],
+                onChange: (value) => onChange(fieldName, value),
             });
         }
         // Check mode
@@ -22,31 +27,27 @@ export const InputField = (field: IField) => {
             return (
                 <SyncfusionField
                     field={field}
-                    value={values[field.name]}
-                    onChange={(value) => onChange(field.name, value)}
+                    value={values[fieldName]}
+                    onChange={(value) => onChange(fieldName, value)}
                 />
             );
         } else if (mode === "ionic") {
             return (
-                <IonicField
-                    field={field}
-                    value={values[field.name]}
-                    onChange={(value) => onChange(field.name, value)}
-                />
+                <IonicField field={field} value={values[fieldName]} onChange={(value) => onChange(fieldName, value)} />
             );
         }
     }, [field, mode]);
 
     return (
-        <div data-testid={"field-" + field.name} className={field.className}>
+        <div data-testid={"field-" + fieldName} className={field.className}>
             {/* Label */}
-            {field.label && mode !== "ionic" && <label form={field.name + "-field"}>{field.label}</label>}
+            {field.label && mode !== "ionic" && <label form={fieldName + "-field"}>{field.label}</label>}
             {/* Input */}
             {inputField}
             {/* Help Text */}
             {field.helpText && <p style={{ color: "gray", fontSize: "small" }}>{field.helpText}</p>}
             {/* Error */}
-            {errors[field.name] && <p style={{ color: "red", fontSize: "small" }}>{errors[field.name]}</p>}
+            {errors[fieldName] && <p style={{ color: "red", fontSize: "small" }}>{errors[fieldName]}</p>}
         </div>
     );
 };

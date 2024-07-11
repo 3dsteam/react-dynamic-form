@@ -1,9 +1,15 @@
 import { IFieldGroup } from "../models/group";
 import { InputField } from "./input-field";
 
-export const InputFieldGroup = (group: IFieldGroup) => {
+interface InputFieldGroupProps extends IFieldGroup {
+    prefix?: string;
+}
+
+export const InputFieldGroup = (group: InputFieldGroupProps) => {
+    const groupName = group.prefix ? group.prefix + "___" + group.name : group.name;
+
     return (
-        <div data-testid={"group-" + group.name} className={group.className}>
+        <div data-testid={"group-" + groupName} className={group.className}>
             {(group.title || group.description) && (
                 <div>
                     {/* Group Title */}
