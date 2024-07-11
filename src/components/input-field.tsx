@@ -51,7 +51,11 @@ export const InputField = (field: IInputFieldProps) => {
             {/* Help Text */}
             {field.helpText && <p style={{ color: "gray", fontSize: "small" }}>{field.helpText}</p>}
             {/* Error */}
-            {errors[fieldName] && <p style={{ color: "red", fontSize: "small" }}>{errors[fieldName]}</p>}
+            {errors[fieldName] && (
+                <p data-testid={"field-" + fieldName + "-error"} style={{ color: "red", fontSize: "small" }}>
+                    {errors[fieldName]}
+                </p>
+            )}
         </div>
     );
 };

@@ -189,14 +189,14 @@ export const DynamicForm = (props: IDynamicFormProps) => {
         rules: fields.reduce(
             (acc, field) => {
                 const setGroupValidation = (group: IFieldGroup, prefix?: string) => {
-                    const name = prefix ? (field.name ? prefix + "___" + field.name : prefix) : field.name;
                     group.fields.forEach((field) => {
+                        const name = prefix ? (field.name ? prefix + "___" + field.name : prefix) : field.name;
                         if ("fields" in field) setGroupValidation(field, name);
                         else if (field.validations) acc[name!] = field.validations;
                     });
                 };
                 // Check if field is a group
-                if ("fields" in field) setGroupValidation(field);
+                if ("fields" in field) setGroupValidation(field, field.name);
                 else if (field.validations) acc[field.name] = field.validations;
                 return acc;
             },
