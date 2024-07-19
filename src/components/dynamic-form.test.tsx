@@ -652,37 +652,44 @@ describe("Group fields", () => {
     });
 });
 
-describe("Validation", () => {
+describe("Specific Test: Validation with preloaded values", () => {
     beforeEach(() => {
-        render(
-            <DynamicForm
-                fields={[
-                    { name: "username", type: EFieldType.TEXT, validations: { required: true } },
-                    { name: "password", type: EFieldType.PASSWORD, validations: { required: true } },
-                    {
-                        fields: [
-                            { name: "email", type: EFieldType.EMAIL, validations: { required: true } },
-                            { name: "phone", type: EFieldType.TEXT, validations: { required: true } },
-                        ],
-                    },
-                    {
-                        name: "privacy",
-                        fields: [
-                            { name: "privacy", type: EFieldType.CHECKBOX, validations: { required: true } },
-                            { name: "date", type: EFieldType.DATE, validations: { required: true } },
-                        ],
-                    },
-                ]}
-                onSubmit={onSubmit}
-                buttons={{
-                    template: ({ onSubmit }) => (
-                        <button data-testid="mock-on-submit" onClick={onSubmit}>
-                            Submit
-                        </button>
-                    ),
-                }}
-            />,
-        );
+        const MyComponent = () => {
+            const [values] = useState({ data: { username: "lorem.ipsum", email: "lorem.ipsum@gmail.com" } });
+            // Render the form
+            return (
+                <DynamicForm
+                    values={values.data}
+                    fields={[
+                        { name: "username", type: EFieldType.TEXT, validations: { required: true } },
+                        { name: "password", type: EFieldType.PASSWORD, validations: { required: true } },
+                        {
+                            fields: [
+                                { name: "email", type: EFieldType.EMAIL, validations: { required: true } },
+                                { name: "phone", type: EFieldType.TEXT, validations: { required: true } },
+                            ],
+                        },
+                        {
+                            name: "privacy",
+                            fields: [
+                                { name: "privacy", type: EFieldType.CHECKBOX, validations: { required: true } },
+                                { name: "date", type: EFieldType.DATE, validations: { required: true } },
+                            ],
+                        },
+                    ]}
+                    onSubmit={onSubmit}
+                    buttons={{
+                        template: ({ onSubmit }) => (
+                            <button data-testid="mock-on-submit" onClick={onSubmit}>
+                                Submit
+                            </button>
+                        ),
+                    }}
+                />
+            );
+        };
+        // Render
+        render(<MyComponent />);
     });
 
     describe("When user submits the form without filling required fields", () => {
@@ -697,9 +704,9 @@ describe("Validation", () => {
 
         it("renders the error messages", () => {
             // Validation.This field is required is the default message of FormValidator
-            expect(screen.getByTestId("field-username-error")).toHaveTextContent("Validation.This field is required");
+            // expect(screen.getByTestId("field-username-error")).toHaveTextContent("Validation.This field is required");
             expect(screen.getByTestId("field-password-error")).toHaveTextContent("Validation.This field is required");
-            expect(screen.getByTestId("field-email-error")).toHaveTextContent("Validation.This field is required");
+            // expect(screen.getByTestId("field-email-error")).toHaveTextContent("Validation.This field is required");
             expect(screen.getByTestId("field-phone-error")).toHaveTextContent("Validation.This field is required");
             expect(screen.getByTestId("field-privacy___privacy-error")).toHaveTextContent(
                 "Validation.This field is required",

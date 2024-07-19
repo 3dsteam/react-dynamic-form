@@ -185,7 +185,7 @@ export const DynamicForm = (props: IDynamicFormProps) => {
      * Validate form based on fields validations
      */
     const { errors, validate } = useFormValidator({
-        data: values,
+        data: { ...values },
         rules: fields.reduce(
             (acc, field) => {
                 const setGroupValidation = (group: IFieldGroup, prefix?: string) => {
