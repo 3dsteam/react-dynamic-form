@@ -50,6 +50,8 @@ export enum EFieldType {
     PASSWORD = "PASSWORD",
     NUMBER = "NUMBER",
     DATE = "DATE",
+    DATETIME = "DATETIME",
+    DATERANGE = "DATERANGE",
     EMAIL = "EMAIL",
     SELECT = "SELECT",
     AUTOCOMPLETE = "AUTOCOMPLETE",
