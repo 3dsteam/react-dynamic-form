@@ -34,7 +34,7 @@ interface IDynamicFormProps {
      * Select witch fields to render
      * @default syncfusion
      */
-    mode?: "syncfusion" | "ionic";
+    mode?: "syncfusion";
     /**
      * If true, all fields with undefined value will be set to null
      * @default true

@@ -142,16 +142,6 @@ describe("Field Mode", () => {
             expect(screen.getByTestId("username-syncfusion-field")).toBeInTheDocument();
         });
     });
-
-    describe("When mode is set to 'ionic'", () => {
-        beforeEach(() => {
-            render(<DynamicForm fields={[{ name: "username", type: EFieldType.TEXT }]} mode="ionic" />);
-        });
-
-        it("renders the Ionic field", () => {
-            expect(screen.getByTestId("username-ionic-field")).toBeInTheDocument();
-        });
-    });
 });
 
 describe("Hidden buttons", () => {

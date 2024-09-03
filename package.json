@@ -1,7 +1,7 @@
 {
   "name": "@3dsteam/react-dynamic-form",
   "description": "A React library for creating dynamic forms based on JSON schema.",
-  "version": "1.0.0-rc.14",
+  "version": "2.0.0-rc.0",
   "type": "module",
   "main": "dist/react-dynamic-form.umd.cjs",
   "module": "dist/react-dynamic-form.js",
@@ -32,7 +32,6 @@
     ]
   },
   "peerDependencies": {
-    "@ionic/react": "^8.2.2",
     "react": ">=18",
     "react-dom": ">=18"
   },
@@ -48,7 +47,6 @@
   "devDependencies": {
     "@eslint/compat": "^1.1.0",
     "@eslint/js": "^9.5.0",
-    "@ionic/react": "^8.2.2",
     "@testing-library/dom": "^10.1.0",
     "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/react": "^16.0.0",

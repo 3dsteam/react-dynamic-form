@@ -1,7 +1,7 @@
 import { createContext } from "react";
 
 interface IDynamicFormContext {
-    mode: "syncfusion" | "ionic";
+    mode: "syncfusion";
     values: Record<string, unknown>;
     onChange: (name: string, value: unknown) => void;
     errors: Record<string, string>;

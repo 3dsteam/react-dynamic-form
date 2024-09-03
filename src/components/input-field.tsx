@@ -1,6 +1,5 @@
 import { IField } from "../models/field";
 import { SyncfusionField } from "./fields/syncfusion-field";
-import { IonicField } from "./fields/ionic-field";
 import { useContext, useMemo } from "react";
 import DynamicFormContext from "../context/dynamic-form";
 
@@ -31,21 +30,13 @@ export const InputField = (field: IInputFieldProps) => {
                     onChange={(value) => onChange(fieldName, value)}
                 />
             );
-        } else if (mode === "ionic") {
-            return (
-                <IonicField
-                    field={{ ...field, name: fieldName }}
-                    value={values[fieldName]}
-                    onChange={(value) => onChange(fieldName, value)}
-                />
-            );
         }
     }, [field, mode]);
 
     return (
         <div data-testid={"field-" + fieldName} className={field.className}>
             {/* Label */}
-            {field.label && mode !== "ionic" && <label form={fieldName + "-field"}>{field.label}</label>}
+            {field.label && <label form={fieldName + "-field"}>{field.label}</label>}
             {/* Input */}
             {inputField}
             {/* Help Text */}

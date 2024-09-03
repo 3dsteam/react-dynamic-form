@@ -12,7 +12,6 @@ __metadata:
     "@3dsteam/react-form-validator": "npm:1.1.0-rc.3"
     "@eslint/compat": "npm:^1.1.0"
     "@eslint/js": "npm:^9.5.0"
-    "@ionic/react": "npm:^8.2.2"
     "@syncfusion/ej2-react-buttons": "npm:^26.1.35"
     "@syncfusion/ej2-react-calendars": "npm:^26.1.35"
     "@syncfusion/ej2-react-dropdowns": "npm:^26.1.35"
@@ -43,7 +42,6 @@ __metadata:
     vite-plugin-dts: "npm:^3.9.1"
     vitest: "npm:^1.6.0"
   peerDependencies:
-    "@ionic/react": ^8.2.2
     react: ">=18"
     react-dom: ">=18"
   languageName: unknown
@@ -376,31 +374,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ionic/core@npm:8.2.2":
-  version: 8.2.2
-  resolution: "@ionic/core@npm:8.2.2"
-  dependencies:
-    "@stencil/core": "npm:^4.17.2"
-    ionicons: "npm:^7.2.2"
-    tslib: "npm:^2.1.0"
-  checksum: 10c0/24f2b3f3eaa284dd7538e7e3fecb383476d00487f7436c48fbb8db160433c4be1df76c307d4f8efd26ca5899011629c6a8e8d47888c08d7ebcc2322743bf45df
-  languageName: node
-  linkType: hard
-
-"@ionic/react@npm:^8.2.2":
-  version: 8.2.2
-  resolution: "@ionic/react@npm:8.2.2"
-  dependencies:
-    "@ionic/core": "npm:8.2.2"
-    ionicons: "npm:^7.0.0"
-    tslib: "npm:*"
-  peerDependencies:
-    react: ">=16.8.6"
-    react-dom: ">=16.8.6"
-  checksum: 10c0/9b9b3b383d14d2fec0c1633f8d7cfc031418b754f3be8238eddff10ee0886123c6731ead9fbd9188eeceb60990d671f4a089ef08dc2eed90f1f43d1ecd83e624
-  languageName: node
-  linkType: hard
-
 "@isaacs/cliui@npm:^8.0.2":
   version: 8.0.2
   resolution: "@isaacs/cliui@npm:8.0.2"
@@ -728,15 +701,6 @@ __metadata:
   version: 0.27.8
   resolution: "@sinclair/typebox@npm:0.27.8"
   checksum: 10c0/ef6351ae073c45c2ac89494dbb3e1f87cc60a93ce4cde797b782812b6f97da0d620ae81973f104b43c9b7eaa789ad20ba4f6a1359f1cc62f63729a55a7d22d4e
-  languageName: node
-  linkType: hard
-
-"@stencil/core@npm:^4.0.3, @stencil/core@npm:^4.17.2":
-  version: 4.18.3
-  resolution: "@stencil/core@npm:4.18.3"
-  bin:
-    stencil: bin/stencil
-  checksum: 10c0/ca292344520451def3cd94b4dcb63b8bb594017d4a4cc04e75519ec6fc6f76dd7dc3ec99c4e8824a469ed1a79785f696072e5ea0f869ba55e71d9415d7d35503
   languageName: node
   linkType: hard
 
@@ -3187,15 +3151,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ionicons@npm:^7.0.0, ionicons@npm:^7.2.2":
-  version: 7.4.0
-  resolution: "ionicons@npm:7.4.0"
-  dependencies:
-    "@stencil/core": "npm:^4.0.3"
-  checksum: 10c0/0f0e9b5a390514e864f098fbc6b69823fa2cde1758d0e43ca6a9a3b19d3a15b595c913e5a4445945bbbf779454c710fd101edb00f5f1a658dafd9073cc10b0b6
-  languageName: node
-  linkType: hard
-
 "ip-address@npm:^9.0.5":
   version: 9.0.5
   resolution: "ip-address@npm:9.0.5"
@@ -5349,13 +5304,6 @@ __metadata:
   peerDependencies:
     typescript: ">=4.2.0"
   checksum: 10c0/f54a0ba9ed56ce66baea90a3fa087a484002e807f28a8ccb2d070c75e76bde64bd0f6dce98b3802834156306050871b67eec325cb4e918015a360a3f0868c77c
-  languageName: node
-  linkType: hard
-
-"tslib@npm:*, tslib@npm:^2.1.0":
-  version: 2.6.3
-  resolution: "tslib@npm:2.6.3"
-  checksum: 10c0/2598aef53d9dbe711af75522464b2104724d6467b26a60f2bdac8297d2b5f1f6b86a71f61717384aa8fd897240467aaa7bcc36a0700a0faf751293d1331db39a
   languageName: node
   linkType: hard
 
