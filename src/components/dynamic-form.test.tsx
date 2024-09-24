@@ -707,3 +707,44 @@ describe("Specific Test: Validation with preloaded values", () => {
         });
     });
 });
+
+describe("Validation form on init", () => {
+    const onChanges = vi.fn();
+
+    beforeEach(() => {
+        render(
+            <DynamicForm
+                validateOnInit
+                values={{ credentials: { username: "lorem.ipsum" } }}
+                fields={[
+                    {
+                        name: "credentials",
+                        fields: [
+                            { name: "username", type: EFieldType.TEXT, validations: { required: true } },
+                            { name: "password", type: EFieldType.PASSWORD, validations: { required: true } },
+                        ],
+                    },
+                    { name: "privacy", type: EFieldType.CHECKBOX, validations: { required: true } },
+                ]}
+                onChanges={onChanges}
+            />,
+        );
+    });
+
+    it("calls onChanges callback with errors", () => {
+        expect(onChanges).toHaveBeenCalledWith(
+            {
+                credentials: { username: "lorem.ipsum", password: null },
+                privacy: null,
+            },
+            false,
+        );
+    });
+
+    it("renders the error messages", () => {
+        expect(screen.getByTestId("field-credentials___password-error")).toHaveTextContent(
+            "Validation.This field is required",
+        );
+        expect(screen.getByTestId("field-privacy-error")).toHaveTextContent("Validation.This field is required");
+    });
+});

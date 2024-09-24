@@ -9,6 +9,7 @@ import _ from "lodash";
 import { IFieldGroup } from "../models/group";
 import { InputFieldGroup } from "./input-field-group";
 import DynamicFormContext from "../context/dynamic-form";
+import { flatValuesFromStructured, getStructuredValues } from "./dynamic-form.functions";
 
 interface IDynamicFormProps {
     /**
@@ -45,6 +46,11 @@ interface IDynamicFormProps {
      * @default false
      */
     clearOnSubmit?: boolean;
+    /**
+     * If true, form will be validated on init
+     * @default false
+     */
+    validateOnInit?: boolean;
 
     /**
      * Setup buttons
@@ -111,7 +117,9 @@ interface IDynamicFormProps {
 }
 
 export const DynamicForm = (props: IDynamicFormProps) => {
-    const [values, setValues] = useState<Record<string, unknown>>(props.values ?? {});
+    const [values, setValues] = useState<Record<string, unknown>>(
+        props.values ? flatValuesFromStructured(props.values) : {},
+    );
     const btnSubmit = useRef<ProgressButtonComponent | null>(null);
 
     /**
@@ -119,7 +127,7 @@ export const DynamicForm = (props: IDynamicFormProps) => {
      * Set values when props values changes
      */
     useEffect(() => {
-        setValues(props.values ?? {});
+        setValues(props.values ? flatValuesFromStructured(props.values) : {});
     }, [props.values]);
 
     const mode = useMemo(() => props.mode ?? "syncfusion", [props.mode]);
@@ -204,6 +212,15 @@ export const DynamicForm = (props: IDynamicFormProps) => {
         ),
     });
 
+    const initRef = useRef(false);
+    useEffect(() => {
+        if (!props.validateOnInit || initRef.current) return;
+        initRef.current = true;
+        // Validate values
+        const isValid = validate(values);
+        props.onChanges?.(getStructuredValues(fields, values, props.nullOnUndefined), isValid);
+    }, [props.validateOnInit, fields, values, props.onChanges, props.nullOnUndefined]);
+
     const handleOnFieldChange = (name: string, value: unknown) => {
         setValues((prev) => ({ ...prev, [name]: value }));
     };
@@ -215,52 +232,24 @@ export const DynamicForm = (props: IDynamicFormProps) => {
     useEffect(() => {
         // Check if values are the same as props
         if (!props.onChanges || _.isEqual(values, props.values)) return;
-        props.onChanges?.(values, validate(values));
-    }, [props.values, props.onChanges, values]);
+        props.onChanges?.(getStructuredValues(fields, values, props.nullOnUndefined), validate(values));
+    }, [props.values, props.onChanges, fields, values, props.nullOnUndefined]);
 
     const handleOnSubmit = async (e?: FormEvent<HTMLFormElement>) => {
         e?.preventDefault();
+
         // Check if callback is undefined
         if (!props.onSubmit) {
             console.warn("onSubmit callback is not defined");
             return;
         }
-        // Check nullOnUndefined
-        if (props.nullOnUndefined ?? true) {
-            // Recursive function to set null values
-            const setNullValues = (fields: (IField | IFieldGroup)[], prefix?: string) => {
-                fields.forEach((field) => {
-                    const name = prefix ? (field.name ? prefix + "___" + field.name : prefix) : field.name;
-                    if ("fields" in field) setNullValues(field.fields, name);
-                    else if (values[name!] === undefined) values[name!] = null;
-                });
-            };
-            // Set null values
-            setNullValues(fields);
-        }
 
         // Validate form and callback
         if (validate(values)) {
-            const structuredValues = {} as Record<string, unknown>;
-            for (const key in values) {
-                const setGroupValues = (keyGroup: string, parent: Record<string, unknown>) => {
-                    const [group, keyValue] = keyGroup.split(/___(.*)/s);
-                    if (!parent[group]) parent[group] = {};
-                    // Check if key is a group
-                    if (keyValue.includes("___")) setGroupValues(keyValue, parent[group] as Record<string, unknown>);
-                    else (parent[group] as Record<string, unknown>)[keyValue] = values[key];
-                };
-                // Add values to structured object
-                if (key.includes("___")) setGroupValues(key, structuredValues);
-                else structuredValues[key] = values[key];
-            }
-            // Callback
-            await props.onSubmit(structuredValues);
-            // Clear form
-            if (props.clearOnSubmit) {
-                handleOnCancel();
-            }
+            await props.onSubmit(getStructuredValues(fields, values, props.nullOnUndefined));
+            if (props.clearOnSubmit) handleOnCancel();
         }
+
         // Complete progress button
         btnSubmit.current?.progressComplete();
     };
