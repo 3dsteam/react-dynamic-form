@@ -47,6 +47,11 @@ interface IDynamicFormProps {
      */
     clearOnSubmit?: boolean;
     /**
+     * If true, form will be submitted when user clicks on clear button
+     * @default false
+     */
+    submitOnClear?: boolean;
+    /**
      * If true, form will be validated on init
      * @default false
      */
@@ -235,7 +240,7 @@ export const DynamicForm = (props: IDynamicFormProps) => {
         props.onChanges?.(getStructuredValues(fields, values, props.nullOnUndefined), validate(values));
     }, [props.values, props.onChanges, fields, values, props.nullOnUndefined]);
 
-    const handleOnSubmit = async (e?: FormEvent<HTMLFormElement>) => {
+    const handleOnSubmit = async (e?: FormEvent<HTMLFormElement>, overrideValues?: Record<string, unknown>) => {
         e?.preventDefault();
 
         // Check if callback is undefined
@@ -245,8 +250,8 @@ export const DynamicForm = (props: IDynamicFormProps) => {
         }
 
         // Validate form and callback
-        if (validate(values)) {
-            await props.onSubmit(getStructuredValues(fields, values, props.nullOnUndefined));
+        if (validate(overrideValues ?? values)) {
+            await props.onSubmit(getStructuredValues(fields, overrideValues ?? values, props.nullOnUndefined));
             if (props.clearOnSubmit) handleOnCancel();
         }
 
@@ -256,6 +261,8 @@ export const DynamicForm = (props: IDynamicFormProps) => {
 
     const handleOnCancel = () => {
         setValues({});
+        // Check for submit on clear
+        if (props.submitOnClear) void handleOnSubmit(undefined, {});
     };
 
     return (
@@ -293,6 +300,7 @@ export const DynamicForm = (props: IDynamicFormProps) => {
                             // Show cancel button
                             props.buttons?.showBtnCancel && (
                                 <ButtonComponent
+                                    data-testid="btn-cancel"
                                     type="reset"
                                     content={props.buttons.btnCancelText ?? "Cancel"}
                                     // Set button properties

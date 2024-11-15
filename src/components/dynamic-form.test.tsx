@@ -748,3 +748,58 @@ describe("Validation form on init", () => {
         expect(screen.getByTestId("field-privacy-error")).toHaveTextContent("Validation.This field is required");
     });
 });
+
+describe("Submit on clear", () => {
+    describe("When submitOnClear is not set", () => {
+        beforeEach(() => {
+            render(
+                <DynamicForm
+                    fields={[{ name: "username", type: EFieldType.TEXT }]}
+                    buttons={{ showBtnCancel: true }}
+                    onSubmit={onSubmit}
+                />,
+            );
+
+            // Fill some fields
+            act(() => {
+                fireEvent.change(screen.getByTestId("username-syncfusion-field"), {
+                    target: { value: "lorem" },
+                });
+            });
+
+            // Clear the form
+            act(() => fireEvent.click(screen.getByTestId("btn-cancel")));
+        });
+
+        it("doesn't call the onSubmit callback", () => {
+            expect(onSubmit).not.toHaveBeenCalled();
+        });
+    });
+
+    describe("When submitOnClear is set", () => {
+        beforeEach(() => {
+            render(
+                <DynamicForm
+                    fields={[{ name: "username", type: EFieldType.TEXT }]}
+                    buttons={{ showBtnCancel: true }}
+                    submitOnClear
+                    onSubmit={onSubmit}
+                />,
+            );
+
+            // Fill some fields
+            act(() => {
+                fireEvent.change(screen.getByTestId("username-syncfusion-field"), {
+                    target: { value: "lorem" },
+                });
+            });
+
+            // Clear the form
+            act(() => fireEvent.click(screen.getByTestId("btn-cancel")));
+        });
+
+        it("calls the onSubmit callback with null values", () => {
+            expect(onSubmit).toHaveBeenCalledWith({ username: null });
+        });
+    });
+});
