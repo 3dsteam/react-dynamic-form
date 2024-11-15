@@ -17,6 +17,7 @@ interface ISyncfusionFieldProps {
 
 export const SyncfusionField = (props: ISyncfusionFieldProps) => {
     if (
+        !props.field.type ||
         props.field.type === EFieldType.TEXT ||
         props.field.type === EFieldType.EMAIL ||
         props.field.type === EFieldType.PASSWORD

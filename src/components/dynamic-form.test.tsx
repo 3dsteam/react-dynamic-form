@@ -803,3 +803,17 @@ describe("Submit on clear", () => {
         });
     });
 });
+
+describe("Default TEXT field type", () => {
+    beforeEach(() => {
+        render(<DynamicForm fields={[{ name: "username" }]} />);
+    });
+
+    it("renders the field", () => {
+        expect(screen.getByTestId("username-syncfusion-field")).toBeInTheDocument();
+    });
+
+    it("renders the TEXT field by default", () => {
+        expect(screen.getByTestId("username-syncfusion-field")).toHaveAttribute("type", "text");
+    });
+});

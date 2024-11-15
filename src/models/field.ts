@@ -4,7 +4,11 @@ import { ICondition } from "./condition";
 
 export interface IField {
     name: string;
-    type: EFieldType;
+    /**
+     * Field type
+     * @default EFieldType.TEXT
+     */
+    type?: EFieldType;
     label?: string;
     placeholder?: string;
     helpText?: string;
