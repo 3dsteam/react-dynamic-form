@@ -5,7 +5,7 @@ import {
     DateRangePickerComponent,
     DateTimePickerComponent,
 } from "@syncfusion/ej2-react-calendars";
-import { AutoCompleteComponent, DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
+import { AutoCompleteComponent, DropDownListComponent, MultiSelectComponent } from "@syncfusion/ej2-react-dropdowns";
 import { CheckBoxComponent } from "@syncfusion/ej2-react-buttons";
 import { GenericField } from "./generic-field";
 
@@ -128,6 +128,21 @@ export const SyncfusionField = (props: ISyncfusionFieldProps) => {
                 placeholder={props.field.placeholder}
                 // Value
                 value={(props.value as string) ?? null}
+                change={(args) => props.onChange(args.value)}
+            />
+        );
+    } else if (props.field.type === EFieldType.MULTISELECT) {
+        return (
+            <MultiSelectComponent
+                id={props.field.name + "-syncfusion-field"}
+                data-testid={props.field.name + "-syncfusion-field"}
+                // Set ALL other properties
+                {...props.field.props}
+                // Identifier
+                name={props.field.name}
+                placeholder={props.field.placeholder}
+                // Value
+                value={(props.value as string[]) ?? null}
                 change={(args) => props.onChange(args.value)}
             />
         );
