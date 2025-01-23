@@ -288,7 +288,7 @@ export const DynamicForm = (props: IDynamicFormProps) => {
                         className={props.buttons?.className}
                     >
                         <ProgressButtonComponent
-                            ref={(el) => (btnSubmit.current = el)}
+                            ref={btnSubmit}
                             type="submit"
                             isPrimary
                             content={props.buttons?.btnSubmitText ?? "Submit"}
