@@ -7,7 +7,12 @@ const flatValuesFromStructured = (values: Record<string, unknown>): Record<strin
     const setFlatValues = (obj: Record<string, unknown>, parentKey?: string) => {
         for (const key in obj) {
             const newKey = parentKey ? `${parentKey}___${key}` : key;
-            if (typeof obj[key] === "object" && obj[key] !== null && !Array.isArray(obj[key])) {
+            if (
+                typeof obj[key] === "object" &&
+                obj[key] !== null &&
+                !Array.isArray(obj[key]) &&
+                !(obj[key] instanceof Date)
+            ) {
                 setFlatValues(obj[key] as Record<string, unknown>, newKey);
             } else {
                 flatValues[newKey] = obj[key];

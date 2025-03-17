@@ -817,3 +817,22 @@ describe("Default TEXT field type", () => {
         expect(screen.getByTestId("username-syncfusion-field")).toHaveAttribute("type", "text");
     });
 });
+
+describe("Default value of DATE type", () => {
+    beforeEach(() => {
+        render(
+            <DynamicForm
+                values={{ birthday: new Date(2020, 5, 23) }}
+                fields={[{ name: "birthday", type: EFieldType.DATE, props: { format: "yyyy-MM-dd" } }]}
+            />,
+        );
+    });
+
+    it("renders the field", () => {
+        expect(screen.getByTestId("birthday-syncfusion-field")).toBeInTheDocument();
+    });
+
+    it("renders the DATE field by default", () => {
+        expect(screen.getByTestId("birthday-syncfusion-field")).toHaveValue("2020-06-23");
+    });
+});
