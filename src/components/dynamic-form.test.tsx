@@ -836,3 +836,24 @@ describe("Default value of DATE type", () => {
         expect(screen.getByTestId("birthday-syncfusion-field")).toHaveValue("2020-06-23");
     });
 });
+
+describe("On cancel callback", () => {
+    const onCancel = vi.fn();
+
+    beforeEach(() => {
+        render(
+            <DynamicForm
+                fields={[{ name: "username", type: EFieldType.TEXT }]}
+                buttons={{ showBtnCancel: true }}
+                onCancel={onCancel}
+            />,
+        );
+
+        // Click on the cancel button
+        act(() => fireEvent.click(screen.getByTestId("btn-cancel")));
+    });
+
+    it("calls the onCancel callback", () => {
+        expect(onCancel).toHaveBeenCalled();
+    });
+});

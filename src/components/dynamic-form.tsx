@@ -30,6 +30,11 @@ interface IDynamicFormProps {
      * Callback function when form data changes
      */
     onChanges?: (data: Record<string, unknown>, isValid: boolean) => void;
+    /**
+     * Callback function when form is canceled
+     * @default undefined
+     */
+    onCancel?: () => void;
 
     /**
      * Select witch fields to render
@@ -263,6 +268,7 @@ export const DynamicForm = (props: IDynamicFormProps) => {
         setValues({});
         // Check for submit on clear
         if (props.submitOnClear) void handleOnSubmit(undefined, {});
+        props.onCancel?.();
     };
 
     return (
