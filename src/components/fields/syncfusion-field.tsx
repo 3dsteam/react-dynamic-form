@@ -12,6 +12,7 @@ import { GenericField } from "./generic-field";
 interface ISyncfusionFieldProps {
     field: IField;
     value: unknown;
+    eventMode: "change" | "input";
     onChange: (value: unknown) => void;
 }
 
@@ -38,7 +39,8 @@ export const SyncfusionField = (props: ISyncfusionFieldProps) => {
                 placeholder={props.field.placeholder}
                 // Value
                 value={(props.value as string) ?? null}
-                change={(args) => props.onChange(args.value)}
+                input={props.eventMode === "input" ? (args) => props.onChange(args.value) : undefined}
+                change={props.eventMode === "change" ? (args) => props.onChange(args.value) : undefined}
             />
         );
     } else if (props.field.type === EFieldType.TEXTAREA) {
@@ -53,7 +55,8 @@ export const SyncfusionField = (props: ISyncfusionFieldProps) => {
                 placeholder={props.field.placeholder}
                 // Value
                 value={(props.value as string) ?? null}
-                change={(args) => props.onChange(args.value)}
+                input={props.eventMode === "input" ? (args) => props.onChange(args.value) : undefined}
+                change={props.eventMode === "change" ? (args) => props.onChange(args.value) : undefined}
             />
         );
     } else if (props.field.type === EFieldType.NUMBER) {
@@ -68,7 +71,7 @@ export const SyncfusionField = (props: ISyncfusionFieldProps) => {
                 placeholder={props.field.placeholder}
                 // Value
                 value={(props.value as number) ?? null}
-                change={(args) => props.onChange(args.value)}
+                change={props.eventMode === "change" ? (args) => props.onChange(args.value) : undefined}
             />
         );
     } else if (props.field.type === EFieldType.DATE) {
@@ -83,7 +86,7 @@ export const SyncfusionField = (props: ISyncfusionFieldProps) => {
                 placeholder={props.field.placeholder}
                 // Value
                 value={(props.value as Date) ?? null}
-                change={(args) => props.onChange(args.value)}
+                change={props.eventMode === "change" ? (args) => props.onChange(args.value) : undefined}
             />
         );
     } else if (props.field.type === EFieldType.DATETIME) {
@@ -98,7 +101,7 @@ export const SyncfusionField = (props: ISyncfusionFieldProps) => {
                 placeholder={props.field.placeholder}
                 // Value
                 value={(props.value as Date) ?? null}
-                change={(args) => props.onChange(args.value)}
+                change={props.eventMode === "change" ? (args) => props.onChange(args.value) : undefined}
             />
         );
     } else if (props.field.type === EFieldType.DATERANGE) {
@@ -113,7 +116,7 @@ export const SyncfusionField = (props: ISyncfusionFieldProps) => {
                 placeholder={props.field.placeholder}
                 // Value
                 value={(props.value as [Date, Date]) ?? null}
-                change={(args) => props.onChange(args.value)}
+                change={props.eventMode === "change" ? (args) => props.onChange(args.value) : undefined}
             />
         );
     } else if (props.field.type === EFieldType.SELECT) {
@@ -128,7 +131,7 @@ export const SyncfusionField = (props: ISyncfusionFieldProps) => {
                 placeholder={props.field.placeholder}
                 // Value
                 value={(props.value as string) ?? null}
-                change={(args) => props.onChange(args.value)}
+                change={props.eventMode === "change" ? (args) => props.onChange(args.value) : undefined}
             />
         );
     } else if (props.field.type === EFieldType.MULTISELECT) {
@@ -143,7 +146,7 @@ export const SyncfusionField = (props: ISyncfusionFieldProps) => {
                 placeholder={props.field.placeholder}
                 // Value
                 value={(props.value as string[]) ?? null}
-                change={(args) => props.onChange(args.value)}
+                change={props.eventMode === "change" ? (args) => props.onChange(args.value) : undefined}
             />
         );
     } else if (props.field.type === EFieldType.AUTOCOMPLETE) {
@@ -158,7 +161,7 @@ export const SyncfusionField = (props: ISyncfusionFieldProps) => {
                 placeholder={props.field.placeholder}
                 // Value
                 value={(props.value as string) ?? null}
-                change={(args) => props.onChange(args.value)}
+                change={props.eventMode === "change" ? (args) => props.onChange(args.value) : undefined}
             />
         );
     } else if (props.field.type === EFieldType.CHECKBOX) {

@@ -42,6 +42,12 @@ interface IDynamicFormProps {
      */
     mode?: "syncfusion";
     /**
+     * Event mode for input fields
+     * @default "change"
+     */
+    eventMode?: "change" | "input";
+
+    /**
      * If true, all fields with undefined value will be set to null
      * @default true
      */
@@ -273,7 +279,9 @@ export const DynamicForm = (props: IDynamicFormProps) => {
 
     return (
         <form data-testid="dynamic-form" onSubmit={handleOnSubmit} className={props.className}>
-            <DynamicFormContext.Provider value={{ mode, values, onChange: handleOnFieldChange, errors }}>
+            <DynamicFormContext.Provider
+                value={{ mode, eventMode: props.eventMode ?? "change", values, onChange: handleOnFieldChange, errors }}
+            >
                 {/* Fields */}
                 {fields.map((field, index) => {
                     // Check if field is a group
