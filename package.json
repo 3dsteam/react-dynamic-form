@@ -32,13 +32,13 @@
     ]
   },
   "peerDependencies": {
-    "react": ">=18",
-    "react-dom": ">=18",
     "@syncfusion/ej2-react-buttons": ">=30",
     "@syncfusion/ej2-react-calendars": ">=30",
     "@syncfusion/ej2-react-dropdowns": ">=30",
     "@syncfusion/ej2-react-inputs": ">=30",
-    "@syncfusion/ej2-react-splitbuttons": ">=30"
+    "@syncfusion/ej2-react-splitbuttons": ">=30",
+    "react": ">=18",
+    "react-dom": ">=18"
   },
   "dependencies": {
     "@3dsteam/react-form-validator": "1.1.0-rc.3",
