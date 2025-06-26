@@ -30,11 +30,6 @@ jobs:
       - name: 📦 Install dependencies
         run: yarn install --immutable
 
-      - name: 🪪 Activate Syncfusion License
-        run: npx syncfusion-license activate
-        env:
-          SYNCFUSION_LICENSE: ${{ secrets.SYNCFUSION_LICENSE }}
-
       - name: 🔨 Build package
         run: yarn build
 
