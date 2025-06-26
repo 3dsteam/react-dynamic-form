@@ -1,7 +1,7 @@
 {
   "name": "@3dsteam/react-dynamic-form",
   "description": "A React library for creating dynamic forms based on JSON schema.",
-  "version": "2.2.0-rc.0",
+  "version": "3.0.0-alpha.0",
   "type": "module",
   "main": "dist/react-dynamic-form.umd.cjs",
   "module": "dist/react-dynamic-form.js",
@@ -33,15 +33,15 @@
   },
   "peerDependencies": {
     "react": ">=18",
-    "react-dom": ">=18"
+    "react-dom": ">=18",
+    "@syncfusion/ej2-react-buttons": ">=30",
+    "@syncfusion/ej2-react-calendars": ">=30",
+    "@syncfusion/ej2-react-dropdowns": ">=30",
+    "@syncfusion/ej2-react-inputs": ">=30",
+    "@syncfusion/ej2-react-splitbuttons": ">=30"
   },
   "dependencies": {
     "@3dsteam/react-form-validator": "1.1.0-rc.3",
-    "@syncfusion/ej2-react-buttons": "^26.1.35",
-    "@syncfusion/ej2-react-calendars": "^26.1.35",
-    "@syncfusion/ej2-react-dropdowns": "^26.1.35",
-    "@syncfusion/ej2-react-inputs": "^26.1.35",
-    "@syncfusion/ej2-react-splitbuttons": "^26.1.35",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
