@@ -16,6 +16,7 @@ export const InputField = (field: IFieldType & { prefix?: string }) => {
                 return field.template({
                     value: values[fieldName] as string,
                     change: ({ value }) => onChange(fieldName, value),
+                    values,
                     error: errors[fieldName] || null,
                 });
             case EFieldType.NUMBER:
@@ -23,6 +24,7 @@ export const InputField = (field: IFieldType & { prefix?: string }) => {
                 return field.template({
                     value: values[fieldName] as number,
                     change: ({ value }) => onChange(fieldName, value),
+                    values,
                     error: errors[fieldName] || null,
                 });
             case EFieldType.DATE:
@@ -31,6 +33,7 @@ export const InputField = (field: IFieldType & { prefix?: string }) => {
                 return field.template({
                     value: values[fieldName] as Date,
                     change: ({ value }) => onChange(fieldName, value),
+                    values,
                     error: errors[fieldName] || null,
                 });
             case EFieldType.DATERANGE:
@@ -38,6 +41,7 @@ export const InputField = (field: IFieldType & { prefix?: string }) => {
                 return field.template({
                     value: values[fieldName] as [Date, Date],
                     change: ({ value }) => onChange(fieldName, value),
+                    values,
                     error: errors[fieldName] || null,
                 });
             case EFieldType.SELECT:
@@ -45,6 +49,7 @@ export const InputField = (field: IFieldType & { prefix?: string }) => {
                 return field.template({
                     value: values[fieldName],
                     change: ({ value }) => onChange(fieldName, value),
+                    values,
                     error: errors[fieldName] || null,
                 });
             case EFieldType.MULTISELECT:
@@ -52,6 +57,7 @@ export const InputField = (field: IFieldType & { prefix?: string }) => {
                 return field.template({
                     value: values[fieldName] as unknown[],
                     change: ({ value }) => onChange(fieldName, value),
+                    values,
                     error: errors[fieldName] || null,
                 });
             case EFieldType.AUTOCOMPLETE:
@@ -59,6 +65,7 @@ export const InputField = (field: IFieldType & { prefix?: string }) => {
                 return field.template({
                     value: values[fieldName],
                     change: ({ value }) => onChange(fieldName, value),
+                    values,
                     error: errors[fieldName] || null,
                 });
             case EFieldType.CHECKBOX:
@@ -66,6 +73,7 @@ export const InputField = (field: IFieldType & { prefix?: string }) => {
                 return field.template({
                     value: values[fieldName] as boolean,
                     change: ({ value }) => onChange(fieldName, value),
+                    values,
                     error: errors[fieldName] || null,
                 });
             default:
@@ -73,7 +81,7 @@ export const InputField = (field: IFieldType & { prefix?: string }) => {
                 console.warn(`Field type is not recognized.`);
                 return null;
         }
-    }, [field.type, values[fieldName], errors[fieldName]]);
+    }, [field.type, values, errors[fieldName]]);
 
     return (
         <div data-testid={"field-" + fieldName} className={field.className}>

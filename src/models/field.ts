@@ -34,7 +34,12 @@ interface IField<T = unknown> {
     /**
      * Input template
      */
-    template: (data: { value: T; change: (args: { value: T }) => void; error: string | null }) => ReactElement;
+    template: (data: {
+        value: T;
+        change: (args: { value: T }) => void;
+        values: Record<string, unknown>;
+        error: string | null;
+    }) => ReactElement;
     /**
      * CSS class for the field container (<div />)
      * @default undefined
