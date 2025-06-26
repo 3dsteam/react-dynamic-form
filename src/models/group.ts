@@ -36,6 +36,9 @@ export interface IFieldGroup {
          */
         className?: string;
     };
+    /**
+     * Fields
+     */
     fields: (IField | IFieldGroup)[];
     /**
      * Render conditions

@@ -1,15 +1,13 @@
-import { FormEvent, ReactElement, useEffect, useMemo, useRef, useState } from "react";
-import { IField } from "../models/field";
-import { InputField } from "./input-field";
-import { ButtonComponent } from "@syncfusion/ej2-react-buttons";
 import useFormValidator, { IRule } from "@3dsteam/react-form-validator";
-import { ProgressButtonComponent } from "@syncfusion/ej2-react-splitbuttons";
-import { EConditionRuleOperator, IConditionRule } from "../models/condition";
 import _ from "lodash";
-import { IFieldGroup } from "../models/group";
-import { InputFieldGroup } from "./input-field-group";
+import { FormEvent, ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import DynamicFormContext from "../context/dynamic-form";
+import { EConditionRuleOperator, IConditionRule } from "../models/condition";
+import { IField } from "../models/field";
+import { IFieldGroup } from "../models/group";
 import { flatValuesFromStructured, getStructuredValues } from "./dynamic-form.functions";
+import { InputField } from "./input-field";
+import { InputFieldGroup } from "./input-field-group";
 
 interface IDynamicFormProps {
     /**
@@ -22,25 +20,25 @@ interface IDynamicFormProps {
      */
     fields: (IField | IFieldGroup)[];
     /**
+     * Setup buttons
+     * @default undefined
+     */
+    buttons: (args: { onSubmit: () => void; onCancel: () => void }) => ReactElement;
+
+    /**
      * Callback function when form is submitted.
      * The data is a record of field name and value
      */
-    onSubmit?: (data: Record<string, unknown>) => Promise<void> | void;
+    onSubmit?: (values: Record<string, unknown>) => Promise<void> | void;
     /**
      * Callback function when form data changes
      */
-    onChanges?: (data: Record<string, unknown>, isValid: boolean) => void;
+    onChanges?: (values: Record<string, unknown>, isValid: boolean) => void;
     /**
      * Callback function when form is canceled
      * @default undefined
      */
     onCancel?: () => void;
-
-    /**
-     * Event mode for input fields
-     * @default "change"
-     */
-    eventMode?: "change" | "input";
 
     /**
      * If true, all fields with undefined value will be set to null
@@ -64,63 +62,6 @@ interface IDynamicFormProps {
     validateOnInit?: boolean;
 
     /**
-     * Setup buttons
-     * @default undefined
-     */
-    buttons?: {
-        /**
-         * Hide buttons
-         * @default false
-         */
-        hidden?: boolean;
-        /**
-         * Text for the submit button
-         * @default "Submit"
-         */
-        btnSubmitText?: string;
-        /**
-         * Properties for the submit button
-         * @default undefined
-         */
-        btnSubmitProps?: Record<string, unknown>;
-        /**
-         * Show cancel button
-         * @default false
-         */
-        showBtnCancel?: boolean;
-        /**
-         * Text for the cancel button
-         * @default "Cancel"
-         */
-        btnCancelText?: string;
-        /**
-         * Properties for the cancel button
-         * @default undefined
-         */
-        btnCancelProps?: Record<string, unknown>;
-        /**
-         * Layout for the buttons
-         * @default "horizontal"
-         */
-        layout?: "horizontal" | "vertical";
-        /**
-         * Classes for buttons container.
-         * This property if only used when template is not defined
-         * @default undefined
-         */
-        className?: string;
-        /**
-         * Custom render for the buttons.
-         *
-         * Note: all previous properties will be ignored.
-         *
-         * To submit the form, you can use type="submit" or call onSubmit() function
-         * @default undefined
-         */
-        template?: (data: { onSubmit: () => void; onCancel: () => void }) => ReactElement;
-    };
-
-    /**
      * Custom class name for the form
      * @default undefined
      */
@@ -131,7 +72,6 @@ export const DynamicForm = (props: IDynamicFormProps) => {
     const [values, setValues] = useState<Record<string, unknown>>(
         props.values ? flatValuesFromStructured(props.values) : {},
     );
-    const btnSubmit = useRef<ProgressButtonComponent | null>(null);
 
     /**
      * Listener for initial values
@@ -246,6 +186,8 @@ export const DynamicForm = (props: IDynamicFormProps) => {
 
     const handleOnSubmit = async (e?: FormEvent<HTMLFormElement>, overrideValues?: Record<string, unknown>) => {
         e?.preventDefault();
+
+        // Avoid submit on other forms
         e?.stopPropagation();
 
         // Check if callback is undefined
@@ -259,9 +201,6 @@ export const DynamicForm = (props: IDynamicFormProps) => {
             await props.onSubmit(getStructuredValues(fields, overrideValues ?? values, props.nullOnUndefined));
             if (props.clearOnSubmit) handleOnCancel();
         }
-
-        // Complete progress button
-        btnSubmit.current?.progressComplete();
     };
 
     const handleOnCancel = () => {
@@ -273,9 +212,8 @@ export const DynamicForm = (props: IDynamicFormProps) => {
 
     return (
         <form data-testid="dynamic-form" onSubmit={handleOnSubmit} className={props.className}>
-            <DynamicFormContext.Provider
-                value={{ eventMode: props.eventMode ?? "change", values, onChange: handleOnFieldChange, errors }}
-            >
+            {/* Inputs form */}
+            <DynamicFormContext.Provider value={{ values, onChange: handleOnFieldChange, errors }}>
                 {/* Fields */}
                 {fields.map((field, index) => {
                     // Check if field is a group
@@ -284,42 +222,7 @@ export const DynamicForm = (props: IDynamicFormProps) => {
                 })}
             </DynamicFormContext.Provider>
             {/* Buttons */}
-            {props.buttons?.template?.({ onSubmit: handleOnSubmit, onCancel: handleOnCancel }) ??
-                // Check if buttons are hidden
-                (!props.buttons?.hidden && (
-                    <div
-                        data-testid="buttons-container"
-                        style={{
-                            display: "flex",
-                            flexDirection: props.buttons?.layout === "vertical" ? "column" : "row",
-                        }}
-                        className={props.buttons?.className}
-                    >
-                        <ProgressButtonComponent
-                            ref={btnSubmit}
-                            type="submit"
-                            isPrimary
-                            content={props.buttons?.btnSubmitText ?? "Submit"}
-                            duration={30000} // Default REST API timeout
-                            // Set button properties
-                            {...props.buttons?.btnSubmitProps}
-                        />
-                        {
-                            // Show cancel button
-                            props.buttons?.showBtnCancel && (
-                                <ButtonComponent
-                                    data-testid="btn-cancel"
-                                    type="reset"
-                                    content={props.buttons.btnCancelText ?? "Cancel"}
-                                    // Set button properties
-                                    {...props.buttons.btnCancelProps}
-                                    // Callback
-                                    onClick={handleOnCancel}
-                                />
-                            )
-                        }
-                    </div>
-                ))}
+            {props.buttons({ onSubmit: handleOnSubmit, onCancel: handleOnCancel })}
         </form>
     );
 };

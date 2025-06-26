@@ -3,22 +3,20 @@ import { IRule } from "@3dsteam/react-form-validator";
 import { ICondition } from "./condition";
 
 export interface IField {
+    /**
+     * Field identifier
+     */
     name: string;
     /**
      * Field type
      * @default EFieldType.TEXT
      */
     type?: EFieldType;
-    label?: string;
-    placeholder?: string;
-    helpText?: string;
     /**
-     * Input properties depending on the type
-     *
-     * @link Syncfusion https://ej2.syncfusion.com/react/documentation/introduction
+     * Field helper text
      * @default undefined
      */
-    props?: Record<string, unknown>;
+    helpText?: string;
     /**
      * Form validation rules
      *
@@ -34,18 +32,20 @@ export interface IField {
      */
     conditions?: ICondition;
     /**
-     * CSS class
+     * Input template
      *
+     * Render the input field
+     */
+    template: (data: {
+        value: unknown;
+        change: (args: { value: unknown }) => void;
+        error: string | null;
+    }) => ReactElement;
+    /**
+     * CSS class for the field container (<div />)
      * @default undefined
      */
     className?: string;
-    /**
-     * Custom template
-     *
-     * Use this property to render you custom input field
-     * @default undefined
-     */
-    template?: (data: { field: IField; value: unknown; onChange: (value: unknown) => void }) => ReactElement;
 }
 
 export enum EFieldType {
