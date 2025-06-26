@@ -8,7 +8,7 @@ interface IInputFieldProps extends IField {
 }
 
 export const InputField = (field: IInputFieldProps) => {
-    const { mode, eventMode, values, onChange, errors } = useContext(DynamicFormContext);
+    const { eventMode, values, onChange, errors } = useContext(DynamicFormContext);
     const fieldName = field.prefix ? field.prefix + "___" + field.name : field.name;
 
     // Check field type
@@ -20,9 +20,7 @@ export const InputField = (field: IInputFieldProps) => {
                 value: values[fieldName],
                 onChange: (value) => onChange(fieldName, value),
             });
-        }
-        // Check mode
-        else if (!mode || mode === "syncfusion") {
+        } else {
             return (
                 <SyncfusionField
                     field={{ ...field, name: fieldName }}
@@ -32,7 +30,7 @@ export const InputField = (field: IInputFieldProps) => {
                 />
             );
         }
-    }, [field, mode]);
+    }, [field]);
 
     return (
         <div data-testid={"field-" + fieldName} className={field.className}>

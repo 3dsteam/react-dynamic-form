@@ -37,11 +37,6 @@ interface IDynamicFormProps {
     onCancel?: () => void;
 
     /**
-     * Select witch fields to render
-     * @default syncfusion
-     */
-    mode?: "syncfusion";
-    /**
      * Event mode for input fields
      * @default "change"
      */
@@ -145,8 +140,6 @@ export const DynamicForm = (props: IDynamicFormProps) => {
     useEffect(() => {
         setValues(props.values ? flatValuesFromStructured(props.values) : {});
     }, [props.values]);
-
-    const mode = useMemo(() => props.mode ?? "syncfusion", [props.mode]);
 
     /**
      * Render conditions
@@ -253,6 +246,7 @@ export const DynamicForm = (props: IDynamicFormProps) => {
 
     const handleOnSubmit = async (e?: FormEvent<HTMLFormElement>, overrideValues?: Record<string, unknown>) => {
         e?.preventDefault();
+        e?.stopPropagation();
 
         // Check if callback is undefined
         if (!props.onSubmit) {
@@ -280,7 +274,7 @@ export const DynamicForm = (props: IDynamicFormProps) => {
     return (
         <form data-testid="dynamic-form" onSubmit={handleOnSubmit} className={props.className}>
             <DynamicFormContext.Provider
-                value={{ mode, eventMode: props.eventMode ?? "change", values, onChange: handleOnFieldChange, errors }}
+                value={{ eventMode: props.eventMode ?? "change", values, onChange: handleOnFieldChange, errors }}
             >
                 {/* Fields */}
                 {fields.map((field, index) => {
