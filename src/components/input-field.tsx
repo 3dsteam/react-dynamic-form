@@ -1,24 +1,79 @@
 import { useContext, useMemo } from "react";
 import DynamicFormContext from "../context/dynamic-form";
-import { IField } from "../models/field";
+import { EFieldType, IFieldType } from "../models/field";
 
-interface IInputFieldProps extends IField {
-    prefix?: string;
-}
-
-export const InputField = (field: IInputFieldProps) => {
+export const InputField = (field: IFieldType & { prefix?: string }) => {
     const { values, onChange, errors } = useContext(DynamicFormContext);
     const fieldName = field.prefix ? field.prefix + "___" + field.name : field.name;
 
-    // Check field type
     const inputField = useMemo(() => {
-        // Render the input field
-        return field.template({
-            value: values[fieldName],
-            change: ({ value }) => onChange(fieldName, value),
-            error: errors[fieldName] || null,
-        });
-    }, [field, values[fieldName], errors[fieldName]]);
+        switch (field.type) {
+            case EFieldType.TEXT:
+            case EFieldType.PASSWORD:
+            case EFieldType.EMAIL:
+            case EFieldType.TEXTAREA:
+                // Render text, password, email, or textarea field
+                return field.template({
+                    value: values[fieldName] as string,
+                    change: ({ value }) => onChange(fieldName, value),
+                    error: errors[fieldName] || null,
+                });
+            case EFieldType.NUMBER:
+                // Render number field
+                return field.template({
+                    value: values[fieldName] as number,
+                    change: ({ value }) => onChange(fieldName, value),
+                    error: errors[fieldName] || null,
+                });
+            case EFieldType.DATE:
+            case EFieldType.DATETIME:
+                // Render datetime field
+                return field.template({
+                    value: values[fieldName] as Date,
+                    change: ({ value }) => onChange(fieldName, value),
+                    error: errors[fieldName] || null,
+                });
+            case EFieldType.DATERANGE:
+                // Render date range field
+                return field.template({
+                    value: values[fieldName] as [Date, Date],
+                    change: ({ value }) => onChange(fieldName, value),
+                    error: errors[fieldName] || null,
+                });
+            case EFieldType.SELECT:
+                // Render select field
+                return field.template({
+                    value: values[fieldName],
+                    change: ({ value }) => onChange(fieldName, value),
+                    error: errors[fieldName] || null,
+                });
+            case EFieldType.MULTISELECT:
+                // Render multiselect field
+                return field.template({
+                    value: values[fieldName] as unknown[],
+                    change: ({ value }) => onChange(fieldName, value),
+                    error: errors[fieldName] || null,
+                });
+            case EFieldType.AUTOCOMPLETE:
+                // Render autocomplete field
+                return field.template({
+                    value: values[fieldName],
+                    change: ({ value }) => onChange(fieldName, value),
+                    error: errors[fieldName] || null,
+                });
+            case EFieldType.CHECKBOX:
+                // Render checkbox field
+                return field.template({
+                    value: values[fieldName] as boolean,
+                    change: ({ value }) => onChange(fieldName, value),
+                    error: errors[fieldName] || null,
+                });
+            default:
+                // If the field type is not recognized, return null
+                console.warn(`Field type is not recognized.`);
+                return null;
+        }
+    }, [field.type, values[fieldName], errors[fieldName]]);
 
     return (
         <div data-testid={"field-" + fieldName} className={field.className}>

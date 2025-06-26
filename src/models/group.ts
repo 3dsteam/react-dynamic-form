@@ -1,5 +1,5 @@
 import { ICondition } from "./condition";
-import { IField } from "./field";
+import { IFieldType } from "./field";
 
 export interface IFieldGroup {
     /**
@@ -39,7 +39,7 @@ export interface IFieldGroup {
     /**
      * Fields
      */
-    fields: (IField | IFieldGroup)[];
+    fields: (IFieldType | IFieldGroup)[];
     /**
      * Render conditions
      * Show/hide the field based on the conditions

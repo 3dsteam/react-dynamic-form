@@ -3,7 +3,7 @@ import _ from "lodash";
 import { FormEvent, ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import DynamicFormContext from "../context/dynamic-form";
 import { EConditionRuleOperator, IConditionRule } from "../models/condition";
-import { IField } from "../models/field";
+import { IFieldType } from "../models/field";
 import { IFieldGroup } from "../models/group";
 import { flatValuesFromStructured, getStructuredValues } from "./dynamic-form.functions";
 import { InputField } from "./input-field";
@@ -18,7 +18,7 @@ interface IDynamicFormProps {
     /**
      * List of fields to render
      */
-    fields: (IField | IFieldGroup)[];
+    fields: (IFieldType | IFieldGroup)[];
     /**
      * Setup buttons
      * @default undefined
@@ -112,7 +112,7 @@ export const DynamicForm = (props: IDynamicFormProps) => {
             }
         };
         // Map fields
-        const mapFields = (fields: (IField | IFieldGroup)[]) => {
+        const mapFields = (fields: (IFieldType | IFieldGroup)[]) => {
             return fields
                 .map((field) => {
                     const FIELD = { ...field };
@@ -131,7 +131,7 @@ export const DynamicForm = (props: IDynamicFormProps) => {
                     if ("fields" in FIELD) FIELD.fields = mapFields(FIELD.fields);
                     return FIELD;
                 })
-                .filter((field) => field !== null) as (IField | IFieldGroup)[];
+                .filter((field) => field !== null) as (IFieldType | IFieldGroup)[];
         };
         // Return fields
         return mapFields([...props.fields]);
