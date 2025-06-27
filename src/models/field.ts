@@ -60,6 +60,7 @@ export enum EFieldType {
     MULTISELECT = "MULTISELECT",
     AUTOCOMPLETE = "AUTOCOMPLETE",
     CHECKBOX = "CHECKBOX",
+    SEPARATOR = "SEPARATOR",
 }
 
 export interface ITextField extends IField<string> {

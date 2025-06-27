@@ -3,11 +3,13 @@ import _ from "lodash";
 import { FormEvent, ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import DynamicFormContext from "../context/dynamic-form";
 import { EConditionRuleOperator, IConditionRule } from "../models/condition";
-import { IFieldType } from "../models/field";
+import { EFieldType, IFieldType } from "../models/field";
 import { IFieldGroup } from "../models/group";
+import { ISeparatorField } from "../models/separator";
 import { flatValuesFromStructured, getStructuredValues } from "./dynamic-form.functions";
 import { InputField } from "./input-field";
 import { InputFieldGroup } from "./input-field-group";
+import { SeparatorField } from "./separator-field";
 
 interface IDynamicFormProps {
     /**
@@ -18,7 +20,7 @@ interface IDynamicFormProps {
     /**
      * List of fields to render
      */
-    fields: (IFieldType | IFieldGroup)[];
+    fields: (IFieldType | IFieldGroup | ISeparatorField)[];
     /**
      * Setup buttons
      * @default undefined
@@ -112,7 +114,7 @@ export const DynamicForm = (props: IDynamicFormProps) => {
             }
         };
         // Map fields
-        const mapFields = (fields: (IFieldType | IFieldGroup)[]) => {
+        const mapFields = (fields: (IFieldType | IFieldGroup | ISeparatorField)[]) => {
             return fields
                 .map((field) => {
                     const FIELD = { ...field };
@@ -131,7 +133,7 @@ export const DynamicForm = (props: IDynamicFormProps) => {
                     if ("fields" in FIELD) FIELD.fields = mapFields(FIELD.fields);
                     return FIELD;
                 })
-                .filter((field) => field !== null) as (IFieldType | IFieldGroup)[];
+                .filter((field) => field !== null) as (IFieldType | IFieldGroup | ISeparatorField)[];
         };
         // Return fields
         return mapFields([...props.fields]);
@@ -145,8 +147,14 @@ export const DynamicForm = (props: IDynamicFormProps) => {
         data: { ...values },
         rules: fields.reduce(
             (acc, field) => {
+                // Skip separator fields
+                if ("type" in field && field.type === EFieldType.SEPARATOR) return acc;
+                // Function to set group validations
                 const setGroupValidation = (group: IFieldGroup, prefix?: string) => {
                     group.fields.forEach((field) => {
+                        // Skip separator fields
+                        if ("type" in field && field.type === EFieldType.SEPARATOR) return;
+                        // Set prefix for group fields
                         const name = prefix ? (field.name ? prefix + "___" + field.name : prefix) : field.name;
                         if ("fields" in field) setGroupValidation(field, name);
                         else if (field.validations) acc[name!] = field.validations;
@@ -161,13 +169,19 @@ export const DynamicForm = (props: IDynamicFormProps) => {
         ),
     });
 
+    type IFieldTypeAndGroup = IFieldType | IFieldGroup;
+
     const initRef = useRef(false);
     useEffect(() => {
         if (!props.validateOnInit || initRef.current) return;
         initRef.current = true;
         // Validate values
         const isValid = validate(values);
-        props.onChanges?.(getStructuredValues(fields, values, props.nullOnUndefined), isValid);
+        const valueFields = fields.filter(
+            (f) => "fields" in f || f.type !== EFieldType.SEPARATOR,
+        ) as IFieldTypeAndGroup[];
+        // Call onChanges callback with structured values
+        props.onChanges?.(getStructuredValues(valueFields, values, props.nullOnUndefined), isValid);
     }, [props.validateOnInit, fields, values, props.onChanges, props.nullOnUndefined]);
 
     const handleOnFieldChange = (name: string, value: unknown) => {
@@ -181,7 +195,11 @@ export const DynamicForm = (props: IDynamicFormProps) => {
     useEffect(() => {
         // Check if values are the same as props
         if (!props.onChanges || _.isEqual(values, props.values)) return;
-        props.onChanges?.(getStructuredValues(fields, values, props.nullOnUndefined), validate(values));
+        const valueFields = fields.filter(
+            (f) => !("type" in f) || f.type !== EFieldType.SEPARATOR,
+        ) as IFieldTypeAndGroup[];
+        // Call onChanges callback with structured values
+        props.onChanges?.(getStructuredValues(valueFields, values, props.nullOnUndefined), validate(values));
     }, [props.values, props.onChanges, fields, values, props.nullOnUndefined]);
 
     const handleOnSubmit = async (e?: FormEvent<HTMLFormElement>, overrideValues?: Record<string, unknown>) => {
@@ -198,7 +216,11 @@ export const DynamicForm = (props: IDynamicFormProps) => {
 
         // Validate form and callback
         if (validate(overrideValues ?? values)) {
-            await props.onSubmit(getStructuredValues(fields, overrideValues ?? values, props.nullOnUndefined));
+            const valueFields = fields.filter(
+                (f) => !("type" in f) || f.type !== EFieldType.SEPARATOR,
+            ) as IFieldTypeAndGroup[];
+            // Call onSubmit callback with structured values
+            await props.onSubmit(getStructuredValues(valueFields, overrideValues ?? values, props.nullOnUndefined));
             if (props.clearOnSubmit) handleOnCancel();
         }
     };
@@ -218,6 +240,8 @@ export const DynamicForm = (props: IDynamicFormProps) => {
                 {fields.map((field, index) => {
                     // Check if field is a group
                     if ("fields" in field) return <InputFieldGroup key={`group-${index}`} {...field} />;
+                    if (field.type === EFieldType.SEPARATOR)
+                        return <SeparatorField key={`separator-${index}`} {...field} />;
                     return <InputField key={field.name} {...field} />;
                 })}
             </DynamicFormContext.Provider>

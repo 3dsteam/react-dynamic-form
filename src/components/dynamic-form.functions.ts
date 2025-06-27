@@ -1,5 +1,6 @@
 import { IFieldGroup } from "../models/group";
-import { IFieldType } from "../models/field";
+import { EFieldType, IFieldType } from "../models/field";
+import { ISeparatorField } from "../models/separator";
 
 const flatValuesFromStructured = (values: Record<string, unknown>): Record<string, unknown> => {
     const flatValues: Record<string, unknown> = {};
@@ -33,8 +34,10 @@ const getStructuredValues = (
 
     if (nullOnUndefined) {
         // Recursive function to set null values
-        const setNullValues = (fields: (IFieldType | IFieldGroup)[], prefix?: string) => {
+        const setNullValues = (fields: (IFieldType | IFieldGroup | ISeparatorField)[], prefix?: string) => {
             fields.forEach((field) => {
+                // Skip separator fields
+                if ("type" in field && field.type === EFieldType.SEPARATOR) return;
                 const name = prefix ? (field.name ? prefix + "___" + field.name : prefix) : field.name;
                 if ("fields" in field) setNullValues(field.fields, name);
                 else if (values[name!] === undefined) values[name!] = null;

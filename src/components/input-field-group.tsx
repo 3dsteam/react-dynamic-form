@@ -1,5 +1,7 @@
+import { EFieldType } from "../models/field";
 import { IFieldGroup } from "../models/group";
 import { InputField } from "./input-field";
+import { SeparatorField } from "./separator-field";
 
 interface InputFieldGroupProps extends IFieldGroup {
     prefix?: string;
@@ -29,6 +31,8 @@ export const InputFieldGroup = (group: InputFieldGroupProps) => {
                         {/* Check if the field is a group */}
                         {"fields" in field ? (
                             <InputFieldGroup {...{ ...field, prefix: groupName }} />
+                        ) : field.type === EFieldType.SEPARATOR ? (
+                            <SeparatorField {...field} />
                         ) : (
                             <InputField {...{ ...field, prefix: groupName }} />
                         )}
