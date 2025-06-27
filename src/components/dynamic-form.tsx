@@ -11,12 +11,12 @@ import { InputField } from "./input-field";
 import { InputFieldGroup } from "./input-field-group";
 import { SeparatorField } from "./separator-field";
 
-interface IDynamicFormProps {
+interface IDynamicFormProps<T> {
     /**
      * Initial values for the form
      * @default undefined
      */
-    values?: Record<string, unknown>;
+    values?: T;
     /**
      * List of fields to render
      */
@@ -31,11 +31,11 @@ interface IDynamicFormProps {
      * Callback function when form is submitted.
      * The data is a record of field name and value
      */
-    onSubmit?: (values: Record<string, unknown>) => Promise<void> | void;
+    onSubmit?: (values: T) => Promise<void> | void;
     /**
      * Callback function when form data changes
      */
-    onChanges?: (values: Record<string, unknown>, isValid: boolean) => void;
+    onChanges?: (values: T, isValid: boolean) => void;
     /**
      * Callback function when form is canceled
      * @default undefined
@@ -70,7 +70,7 @@ interface IDynamicFormProps {
     className?: string;
 }
 
-export const DynamicForm = (props: IDynamicFormProps) => {
+export const DynamicForm = <T extends Record<string, unknown>>(props: IDynamicFormProps<T>) => {
     const [values, setValues] = useState<Record<string, unknown>>(
         props.values ? flatValuesFromStructured(props.values) : {},
     );
@@ -181,7 +181,7 @@ export const DynamicForm = (props: IDynamicFormProps) => {
             (f) => "fields" in f || f.type !== EFieldType.SEPARATOR,
         ) as IFieldTypeAndGroup[];
         // Call onChanges callback with structured values
-        props.onChanges?.(getStructuredValues(valueFields, values, props.nullOnUndefined), isValid);
+        props.onChanges?.(getStructuredValues(valueFields, values, props.nullOnUndefined) as T, isValid);
     }, [props.validateOnInit, fields, values, props.onChanges, props.nullOnUndefined]);
 
     const handleOnFieldChange = (name: string, value: unknown) => {
@@ -199,7 +199,7 @@ export const DynamicForm = (props: IDynamicFormProps) => {
             (f) => !("type" in f) || f.type !== EFieldType.SEPARATOR,
         ) as IFieldTypeAndGroup[];
         // Call onChanges callback with structured values
-        props.onChanges?.(getStructuredValues(valueFields, values, props.nullOnUndefined), validate(values));
+        props.onChanges?.(getStructuredValues(valueFields, values, props.nullOnUndefined) as T, validate(values));
     }, [props.values, props.onChanges, fields, values, props.nullOnUndefined]);
 
     const handleOnSubmit = async (e?: FormEvent<HTMLFormElement>, overrideValues?: Record<string, unknown>) => {
@@ -220,7 +220,9 @@ export const DynamicForm = (props: IDynamicFormProps) => {
                 (f) => !("type" in f) || f.type !== EFieldType.SEPARATOR,
             ) as IFieldTypeAndGroup[];
             // Call onSubmit callback with structured values
-            await props.onSubmit(getStructuredValues(valueFields, overrideValues ?? values, props.nullOnUndefined));
+            await props.onSubmit(
+                getStructuredValues(valueFields, overrideValues ?? values, props.nullOnUndefined) as T,
+            );
             if (props.clearOnSubmit) handleOnCancel();
         }
     };
